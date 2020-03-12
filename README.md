@@ -241,3 +241,13 @@ The player is told when they win the game
 
 ## Time Estimate
 "Small" taking 0 - 2 hours
+
+# Domain Modeling
+
+## Class Model
+
+![Class Model](/models/class_model.png)
+
+## Sequence Diagram
+
+![Sequence Diagram](/models/sequence_diagram.png)
