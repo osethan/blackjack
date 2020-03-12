@@ -245,9 +245,10 @@ The player is told when they win the game
 # Domain Modeling
 
 ## Class Model
-
 ![Class Model](/models/class_model.png)
 
 ## Sequence Diagram
-
 ![Sequence Diagram](/models/sequence_diagram.png)
+
+# Database Entity-Relationship-Diagram (SQL DBs only)
+No database is being used in the project
