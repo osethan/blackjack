@@ -6,7 +6,7 @@ class Pack:
 
   def __init__(self):
     """
-    Pack ctor.
+    Pack constructor.
     """
     pass
 
@@ -18,13 +18,13 @@ class _Deck:
 
   def __init__(self):
     """
-    Deck ctor.
+    Deck constructor.
     """
     
     self.cards = []
 
     suits = ['Clubs', 'Diamonds', 'Hearts', 'Spades']
-    pips = list(range(2, 11)) + ['Jack', 'Queen', 'King', 'Ace']
+    pips = [str(d) for d in list(range(2, 11))] + ['Jack', 'Queen', 'King', 'Ace']
 
     for suit in suits:
       for pip in pips:
@@ -39,7 +39,7 @@ class _Card:
 
   def __init__(self, suit, pip):
     """
-    Card ctor.
+    Card constructor.
     """
     
     self.suit = suit

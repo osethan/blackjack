@@ -8,7 +8,7 @@ def test_deck_cards(deck):
   Deck is made with right cards.
   """
   
-  expected_cards = [_Card('Clubs', 2), _Card('Spades', 'Ace')]
+  expected_cards = [_Card('Clubs', '2'), _Card('Spades', 'Ace')]
   actual_cards = [deck.cards[0], deck.cards[len(deck.cards) - 1]]
 
   for i in range(2):
