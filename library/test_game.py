@@ -41,7 +41,6 @@ def test_game_welcome(prints, prompts, responses):
 
 
 @pytest.mark.parametrize('prints, prompts, responses', [
-  # Expected successes
   # Expected failures
   # Bet not a number
   (['Can only bet whole number of chips'], [
@@ -73,6 +72,8 @@ def test_game_welcome(prints, prompts, responses):
   ], [
     '201'
   ]),
+  # Expected successes
+  ([], ['You have 200 chips. What is your bet?'], ['100']),
 ])
 def test_bet(prints, prompts, responses):
   """

@@ -20,6 +20,7 @@ class Game:
     self.pack = Pack()
     self.seats = seats
 
+
   def main(self):
     """
     Entry point of program execution.
@@ -29,6 +30,10 @@ class Game:
       self._quit()
 
     self.pack.shuffle()
+    
+    if not self._bet():
+      self._quit()
+
 
   def _bet(self, player):
     """
@@ -67,6 +72,7 @@ class Game:
 
       if res == 'y':
         return True
+
 
   def _quit(self):
     """
