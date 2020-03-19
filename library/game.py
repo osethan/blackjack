@@ -35,15 +35,23 @@ class Game:
 
     # Get bets from players
     for i, seat in enumerate(self.seats):
-      if i >= len(seats) - 1:
+      if i >= len(self.seats) - 1:
         continue
 
-      if not self._bet(seat):
-        self._quit()
+      while True:
+        if self._bet(seat):
+          break
 
     # Deal cards to all seats
     for i in range(2 * len(self.seats)):
-      game._deal(seats, i)
+      game._deal(self.seats, i)
+
+    for seat in self.seats:
+      print(seat)
+      # for card in seat.cards:
+      #   print(card)
+
+      # print()
 
 
   def _bet(self, player):
