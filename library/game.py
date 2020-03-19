@@ -46,12 +46,8 @@ class Game:
     for i in range(2 * len(self.seats)):
       game._deal(self.seats, i)
 
-    for seat in self.seats:
-      print(seat)
-      # for card in seat.cards:
-      #   print(card)
-
-      # print()
+    # for seat in self.seats:
+    #   self.print(seat)
 
 
   def _bet(self, player):
@@ -61,6 +57,9 @@ class Game:
 
     p = r'^\d+$'
     bet = self.prompt(f'You have {player.purse} chips. What is your bet?')
+
+    if bet == 'q':
+      self._quit()
 
     if not re.match(p, bet):
       self.print('Can only bet whole number of chips')
@@ -112,6 +111,9 @@ class Game:
 
     while True:
       res = self.prompt('Welcome to Blackjack! Do you want to play? (y/n)')
+
+      if res == 'q':
+        self._quit()
 
       if res == 'n':
         return False
