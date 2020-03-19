@@ -127,7 +127,7 @@ def test_deal_totals_no_score_ace(init_deal_totals):
   # Test specific values
   game = init_deal_totals['game']
   index = init_deal_totals['index']
-  expected = ['1', '11']
+  expected = [1, 11]
 
   # Act on values
   card = game.pack.hit(card_str = "('Spades', 'Ace')")
@@ -149,7 +149,7 @@ def test_deal_totals_no_score_not_ace(init_deal_totals):
   # Test specific values
   game = init_deal_totals['game']
   index = init_deal_totals['index']
-  expected = ['2']
+  expected = [2]
 
   # Act on values
   card = game.pack.hit(card_str = "('Clubs', '2')")
@@ -171,7 +171,7 @@ def test_deal_totals_one_score_ace(init_deal_totals):
   # Test specific values
   game = init_deal_totals['game']
   index = init_deal_totals['index']
-  expected = ['3', '13']
+  expected = [3, 13]
 
   # Act on values
   card = game.pack.hit(card_str = "('Clubs', '2')")
@@ -196,7 +196,7 @@ def test_deal_totals_one_score_not_ace(init_deal_totals):
   # Test specific values
   game = init_deal_totals['game']
   index = init_deal_totals['index']
-  expected = ['5']
+  expected = [5]
 
   # Act on values
   card = game.pack.hit(card_str = "('Clubs', '2')")
@@ -221,7 +221,7 @@ def test_deal_totals_two_scores_ace(init_deal_totals):
   # Test specific values
   game = init_deal_totals['game']
   index = init_deal_totals['index']
-  expected = ['2', '22']
+  expected = [2, 22]
 
   # Act on values
   card = game.pack.hit(card_str = "('Spades', 'Ace')")
@@ -246,7 +246,7 @@ def test_deal_totals_two_scores_not_ace(init_deal_totals):
   # Test specific values
   game = init_deal_totals['game']
   index = init_deal_totals['index']
-  expected = ['4', '14']
+  expected = [4, 14]
 
   # Act on values
   card = game.pack.hit(card_str = "('Spades', 'Ace')")
