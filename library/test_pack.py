@@ -56,6 +56,20 @@ def test_pack_shuffle(pack):
     assert actual_cards[i].pip == expected_cards[i].pip
 
 
+def test_str_card():
+  """
+  String representation of card is right.
+  """
+
+  card = _Card('Clubs', '2')
+
+  print(card.hidden)
+
+  expected = "('Clubs', '2')"
+  actual = str(card)
+  assert actual == expected
+
+
 # Fixtures
 
 

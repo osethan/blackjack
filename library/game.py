@@ -31,8 +31,19 @@ class Game:
 
     self.pack.shuffle()
     
-    if not self._bet():
-      self._quit()
+    # Game loop
+
+    # Get bets from players
+    for i, seat in enumerate(self.seats):
+      if i >= len(seats) - 1:
+        continue
+
+      if not self._bet(seat):
+        self._quit()
+
+    # Deal cards to all seats
+    for i in range(2 * len(self.seats)):
+      game._deal(seats, i)
 
 
   def _bet(self, player):
@@ -57,6 +68,33 @@ class Game:
     player.purse = player.purse - bet
 
     return True
+
+  
+  def _deal(self, seats, i, _card = None):
+    """
+    Deal a card to a seat.
+
+    In:
+    seats (list[Seat]): All seats playing Blackjack.
+    i (int): Seat index modulus number of seats.
+    """
+
+    # Find seat
+    seat = seats[i % len(seats)]
+    
+    # Find card
+    card = None
+    if _card:
+      card = self.pack.hit(str(_card))
+    else:
+      card = self.pack.hit()
+
+    # Set card hidden or visible
+    if i == 2 * len(seats) - 1:
+      card.set_hidden(True)
+
+    # Seat gets card
+    seat.add_card(card)
 
 
   def _welcome(self):
