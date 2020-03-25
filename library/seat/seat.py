@@ -11,9 +11,9 @@ class Seat:
     Seat ctor.
     """
 
-    self.name = ''
-    self.cards = []
-    self.totals = []
+    self.__name = ''
+    self.__cards = []
+    self.__totals = []
 
 
   # def __str__(self):
@@ -75,14 +75,38 @@ class Player(Seat):
 
     super().__init__()
 
-    self.name = 'Client'
-    self.purse = 200
-    self.bet = 0
-    self.insurance_bet = 0
-    self.double_down_bet = 0
-    self.split_pair_bets = []
-    self.split_pair_hands = []
-    self.split_pair_totals = []
+    self.__name = 'Player'
+    self.__purse = 200
+    self.__bet = 0
+    self.__insurance_bet = 0
+    self.__double_down_bet = 0
+    self.__split_pair_bets = []
+    self.__split_pair_hands = []
+    self.__split_pair_totals = []
+
+
+  def get_purse(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__purse
+
+
+  def set_purse(self, purse):
+    """
+    Setter mutator.
+    """
+
+    self.__purse = purse
+
+
+  def set_bet(self, bet):
+    """
+    Setter mutator.
+    """
+
+    self.__bet = bet
 
 
   # def __str__(self):
@@ -109,4 +133,4 @@ class Dealer(Seat):
 
     super().__init__()
 
-    self.name = 'Dealer'
+    self.__name = 'Dealer'

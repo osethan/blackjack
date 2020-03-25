@@ -15,11 +15,19 @@ class Game:
     Game ctor.
     """
 
-    self.print = _print
-    self.input = _input
-    self.pack = Pack()
-    self.player = Player()
-    self.dealer = Dealer()
+    self.__print = _print
+    self.__input = _input
+    self.__pack = Pack()
+    self.__player = Player()
+    self.__dealer = Dealer()
+
+
+  def get_player(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__player
 
   # def __init__(self, seats = [Player(), Dealer()], _print = print, _prompt = input):
   #   """
@@ -73,51 +81,54 @@ class Game:
     """
 
     pattern = r'^\d+$'
-    bet = self.input(f'You have {player.purse} chips. What is your bet?')
+    bet = self.__input(f'You have {player.get_purse()} chips. What is your bet?')
 
     # Bet isn't an integer
     if not re.match(pattern, bet):
-      self.print('Can only bet whole number of chips')
+      self.__print('Can only bet whole number of chips')
       return False
 
     bet = int(bet)
 
     # Bet is too low or high
-    if bet < 2 or bet > 500 or bet > player.purse:
-      self.print('Can only bet 2 - 500 chips and no more than purse')
+    if bet < 2 or bet > 500 or bet > player.get_purse():
+      self.__print('Can only bet 2 - 500 chips and no more than purse')
       return False
 
     # Set player bet
-    player.purse -= bet
-    player.bet = bet
+    player.set_purse(player.get_purse() - bet)
+    player.set_bet(bet)
     return True
 
   
-  # def _deal(self, seats, i, _card = None):
-  #   """
-  #   Deal a card to a seat.
+  def make_deal(self, seat, _cards = []):
+    """
+    Deal 2 cards to a seat.
 
-  #   In:
-  #   seats (list[Seat]): All seats playing Blackjack.
-  #   i (int): Seat index modulus number of seats.
-  #   """
+    In:
+    seat (Seat): A player or a dealer.
+    _cards (Card[]): Optional list of cards to deal to seat.
+    """
 
-  #   # Find seat
-  #   seat = seats[i % len(seats)]
+    # Find seat
+    # seat = seats[i % len(seats)]
     
-  #   # Find card
-  #   card = None
-  #   if _card:
-  #     card = self.pack.hit(str(_card))
-  #   else:
-  #     card = self.pack.hit()
+    if _cards:
+      pass
 
-  #   # Set card hidden or visible
-  #   if i == 2 * len(seats) - 1:
-  #     card.set_hidden(True)
+    # Find card
+    # card = None
+    # if _card:
+    #   card = self.pack.hit(str(_card))
+    # else:
+    #   card = self.pack.hit()
 
-  #   # Seat gets card
-  #   seat.add_card(card)
+    # Set card hidden or visible
+    # if i == 2 * len(seats) - 1:
+    #   card.set_hidden(True)
+
+    # Seat gets card
+    # seat.add_card(card)
 
 
   # def _welcome(self):

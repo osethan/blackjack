@@ -62,5 +62,5 @@ def test_game_make_bet(prints, inputs, responses):
     return responses.pop(0)
 
   game = Game(_print = test_print, _input = test_input)
-  player = game.player
+  player = game.get_player()
   game.make_bet(player)

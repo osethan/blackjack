@@ -16,7 +16,38 @@ class Pack:
         for pip in Card.PIPS:
             cards.append(Card(suit, pip))
 
-    self.cards = cards
+    self.__cards = cards
+
+
+  def get_cards(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__cards
+
+
+  def set_cards(self, cards):
+    """
+    Setter mutator.
+
+    In:
+    cards (Card[]): New state of cards.
+    """
+
+    self.__cards = cards
+
+
+  def set_card(self, idx, card):
+    """
+    Setter mutator. A card at an index is set.
+
+    In:
+    idx (int): Index of card to set.
+    card (Card): A card to insert at the index.
+    """
+
+    self.__cards[idx] = card
 
 
   def shuffle(self, _random = None):
@@ -27,35 +58,40 @@ class Pack:
     random (function): Set random behavior.
     """
 
-    for i, card in enumerate(self.cards):
+    for i, card in enumerate(self.get_cards()):
       swap_idx = -1
       if _random:
-        swap_idx = _random(0, len(self.cards) - 1)
+        swap_idx = _random(0, len(self.get_cards()) - 1)
       else:
         swap_idx = random.randint(0, len(self.cards) - 1)
 
-      swap_card = self.cards[swap_idx]
-      self.cards[swap_idx] = card
-      self.cards[i] = swap_card
+      swap_card = self.get_cards()[swap_idx]
+      self.set_card(swap_idx, card)
+      self.set_card(i, swap_card)
 
   
-  def hit(self, card = None):
+  def hit(self, _card = None):
     """
     Take a card from pack.
 
     In:
-    card (Card): Optional card to remove from pack.
+    _card (Card): Optional card to remove from pack.
 
     Out:
     (Card): Card taken from pack.
     """
 
-    if card:
-      for i, _card in enumerate(self.cards):
-        if _card.suit == card.suit and _card.pip == card.pip:
-          return self.cards.pop(i)
+    cards = self.get_cards()
+    if _card:
+      for i, pack_card in enumerate(cards):
+        if _card.get_suit() == pack_card.get_suit() and _card.get_pip() == pack_card.get_pip():
+          card = cards.pop(i)
+          self.set_cards(cards)
+          return card
 
-    return self.cards.pop(0)
+    card = cards.pip(0)
+    self.set_cards(cards)
+    return card
 
 
 class Card:
@@ -79,9 +115,25 @@ class Card:
     if suit not in Card.SUITS or pip not in Card.PIPS:
       return None
 
-    self.suit = suit
-    self.pip = pip
-    self.hidden = False
+    self.__suit = suit
+    self.__pip = pip
+    self.__hidden = False
+
+
+  def get_suit(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__suit
+
+
+  def get_pip(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__pip
 
 
   # def __str__(self):
