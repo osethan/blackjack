@@ -1,8 +1,8 @@
-# import re
+import re
 # import sys
 
-from pack import Pack
-from seat import Dealer, Player
+from library.pack.pack import Pack
+from library.seat.seat import Dealer, Player
 
 
 class Game:
@@ -61,31 +61,36 @@ class Game:
   #   #   self.print(seat)
 
 
-  # def _bet(self, player):
-  #   """
-  #   Ask player how much they'd like to bet
-  #   """
+  def make_bet(self, player):
+    """
+    Ask player for bet.
 
-  #   p = r'^\d+$'
-  #   bet = self.prompt(f'You have {player.purse} chips. What is your bet?')
+    In:
+    player (Player): A player making a bet.
 
-  #   if bet == 'q':
-  #     self._quit()
+    Out:
+    (boolean): A bet was made successfully.
+    """
 
-  #   if not re.match(p, bet):
-  #     self.print('Can only bet whole number of chips')
-  #     return False
+    pattern = r'^\d+$'
+    bet = self.input(f'You have {player.purse} chips. What is your bet?')
 
-  #   bet = int(bet)
+    # Bet isn't an integer
+    if not re.match(pattern, bet):
+      self.print('Can only bet whole number of chips')
+      return False
 
-  #   if bet < 2 or bet > 500 or bet > player.purse:
-  #     self.print('Can only bet $2 - $500 and no more than purse')
-  #     return False
+    bet = int(bet)
 
-  #   player.bet = bet
-  #   player.purse = player.purse - bet
+    # Bet is too low or high
+    if bet < 2 or bet > 500 or bet > player.purse:
+      self.print('Can only bet 2 - 500 chips and no more than purse')
+      return False
 
-  #   return True
+    # Set player bet
+    player.purse -= bet
+    player.bet = bet
+    return True
 
   
   # def _deal(self, seats, i, _card = None):

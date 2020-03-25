@@ -1,4 +1,4 @@
-from pack import Card
+# from pack import Card
 
 
 class Seat:
