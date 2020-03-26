@@ -161,7 +161,8 @@ class Game:
 
     # Dealer face card is ace so player can call insurance
     if 'Ace' == dealer_cards[0].get_pip():
-      self.make_insurance()
+      while not self.make_insurance(self.get_player()):
+        continue
 
       # Dealer has natural
       dealer_cards = self.get_dealer().get_cards()
@@ -174,6 +175,20 @@ class Game:
         # Player keeps bet if they have natural
 
 
+  def check_player_natural(self, player):
+    """
+    Player may have dealt natural.
+
+    In:
+    player (Player): A player who may have been dealt a natural.
+
+    Out:
+    (bool): A player has been dealt a natural.
+    """
+
+    player_cards = player.get_cards()
+    return len([pc for pc in player_cards if pc.get_pip() == 'Ace']) == 1 and len([pc for pc in player_cards if pc.get_pip() in ['10', 'Jack', 'Queen', 'King']]) == 1
+
 
   def make_insurance(self, player):
     """
@@ -181,6 +196,9 @@ class Game:
 
     In:
     player (Player): A player deciding to make insurance.
+
+    Out:
+    (bool): A player has made insurance.
     """
 
     # Player decides to take insurance

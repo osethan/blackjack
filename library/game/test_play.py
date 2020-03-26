@@ -198,3 +198,21 @@ def test_make_insurance_failures(prints, inputs, responses, expected):
   game.make_bet(player)
   actual = game.make_insurance(player)
   assert actual == expected
+
+
+@pytest.mark.parametrize('cards, expected', [
+  # Expected successes
+  ([Card('Clubs', 'Ace'), Card('Hearts', 'Jack')], True),
+  # Expected failures
+  ([Card('Clubs', '2'), Card('Hearts', '3')], False),
+])
+def test_check_player_natural(cards, expected):
+  """
+  Player checked for a dealt natural.
+  """
+
+  game = Game()
+  player = game.get_player()
+  game.make_deal(player, cards)
+  actual = game.check_player_natural(player)
+  assert actual == expected
