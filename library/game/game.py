@@ -45,6 +45,22 @@ class Game:
 
     return self.__pack
 
+
+  def print(self, message):
+    """
+    Print to output.
+    """
+
+    self.__print(message)
+
+
+  def input(self, message):
+    """
+    Take input.
+    """
+
+    return self.__input(message)
+
   # def __init__(self, seats = [Player(), Dealer()], _print = print, _prompt = input):
   #   """
   #   Game constructor.
@@ -97,18 +113,18 @@ class Game:
     """
 
     pattern = r'^\d+$'
-    bet = self.__input(f'You have {player.get_purse()} chips. What is your bet?')
+    bet = self.input(f'You have {player.get_purse()} chips. What is your bet?')
 
     # Bet isn't an integer
     if not re.match(pattern, bet):
-      self.__print('Can only bet whole number of chips')
+      self.print('Can only bet whole number of chips')
       return False
 
     bet = int(bet)
 
     # Bet is too low or high
     if bet < 2 or bet > 500 or bet > player.get_purse():
-      self.__print('Can only bet 2 - 500 chips and no more than purse')
+      self.print('Can only bet 2 - 500 chips and no more than purse')
       return False
 
     # Set player bet
@@ -136,6 +152,64 @@ class Game:
       seat_cards[1].set_hidden(True)
 
     seat.set_cards(seat_cards)
+
+
+  def check_dealer_natural(self):
+    """
+    Check dealer for dealt natural before player plays.
+    """
+
+    # Dealer face card is ace so player can call insurance
+    if 'Ace' == dealer_cards[0].get_pip():
+      self.make_insurance()
+
+      # Dealer has natural
+      dealer_cards = self.get_dealer().get_cards()
+      if [ten for ten in ['10', 'Jack', 'Queen', 'King'] if ten in dealer_cards]:
+        # Player wins double insurance bet
+        insurance_bet = self.get_player().get_insurance_bet()
+        self.get_player().set_insurance_bet(0)
+        self.get_player().set_purse(self.get_player().get_purse() + 2 * insurance_bet)
+
+        # Player keeps bet if they have natural
+
+
+
+  def make_insurance(self, player):
+    """
+    Player can call insurance.
+
+    In:
+    player (Player): A player deciding to make insurance.
+    """
+
+    # Player decides to take insurance
+    response = self.input('Dealer has has an ace. Do you want insurance? (y/n)')
+    if response != 'y':
+      return False
+
+    # Player decides size of insurance
+    pattern = r'^\d+$'
+    insurance_bet = 0
+    insurance_bet = self.input('Can take up to half original bet. How much insurance do you want?')
+
+    # Insurance bet isn't an integer
+    if not re.match(pattern, insurance_bet):
+      self.print('Can only bet whole number of chips')
+      return False
+
+    insurance_bet = int(insurance_bet)
+
+    # Insurance bet is too low or high
+    player_bet = player.get_bet()
+    if insurance_bet < 2 or insurance_bet > player_bet // 2:
+      self.print(f'Can only bet 2 - {player_bet // 2} chips')
+      return False
+
+    player.set_purse(player.get_purse() - insurance_bet)
+    player.set_insurance_bet(insurance_bet)
+    return True
+
 
 
   # def _welcome(self):

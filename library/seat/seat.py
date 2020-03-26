@@ -112,12 +112,28 @@ class Player(Seat):
     self.__split_pair_totals = []
 
 
+  def get_bet(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__bet
+
+
   def get_purse(self):
     """
     Getter accessor.
     """
 
     return self.__purse
+
+
+  def get_insurance_bet(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__insurance_bet
 
 
   def set_purse(self, purse):
@@ -134,6 +150,14 @@ class Player(Seat):
     """
 
     self.__bet = bet
+
+
+  def set_insurance_bet(self, insurance_bet):
+    """
+    Setter mutator.
+    """
+
+    self.__insurance_bet = insurance_bet
 
 
   # def __str__(self):
