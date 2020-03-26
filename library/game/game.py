@@ -29,6 +29,22 @@ class Game:
 
     return self.__player
 
+
+  def get_dealer(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__dealer
+
+
+  def get_pack(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__pack
+
   # def __init__(self, seats = [Player(), Dealer()], _print = print, _prompt = input):
   #   """
   #   Game constructor.
@@ -101,34 +117,25 @@ class Game:
     return True
 
   
-  def make_deal(self, seat, _cards = []):
+  def make_deal(self, seat, cards = []):
     """
     Deal 2 cards to a seat.
 
     In:
     seat (Seat): A player or a dealer.
-    _cards (Card[]): Optional list of cards to deal to seat.
+    cards (Card[]): Optional list of cards to deal to seat.
     """
 
-    # Find seat
-    # seat = seats[i % len(seats)]
-    
-    if _cards:
-      pass
+    seat_cards = []
+    if cards:
+      seat_cards = [self.get_pack().hit(card) for card in cards]
+    else:
+      seat_cards = [self.get_pack().hit() for _ in range(2)]
 
-    # Find card
-    # card = None
-    # if _card:
-    #   card = self.pack.hit(str(_card))
-    # else:
-    #   card = self.pack.hit()
+    if isinstance(seat, Dealer):
+      seat_cards[1].set_hidden(True)
 
-    # Set card hidden or visible
-    # if i == 2 * len(seats) - 1:
-    #   card.set_hidden(True)
-
-    # Seat gets card
-    # seat.add_card(card)
+    seat.set_cards(seat_cards)
 
 
   # def _welcome(self):

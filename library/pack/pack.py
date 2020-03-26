@@ -136,6 +136,14 @@ class Card:
     return self.__pip
 
 
+  def get_hidden(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__hidden
+
+
   # def __str__(self):
   #   """
   #   String representation of a card.
@@ -150,12 +158,12 @@ class Card:
   #     return "('*', '*')"
 
 
-  # def set_hidden(self, value):
-  #   """
-  #   Change if a card is hidden or visible.
+  def set_hidden(self, value):
+    """
+    Change if a card is hidden or visible.
 
-  #   In:
-  #   value (bool): Whether the card is hidden or visible.
-  #   """
+    In:
+    value (bool): Whether a card is hidden or visible.
+    """
 
-  #   self.hidden = value
+    self.__hidden = value

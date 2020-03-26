@@ -1,7 +1,7 @@
 import pytest
 
 from library.game.game import Game
-from library.pack.pack import Pack
+from library.pack.pack import Pack, Card
 
 
 @pytest.mark.parametrize('prints, inputs, responses', [
@@ -64,3 +64,34 @@ def test_game_make_bet(prints, inputs, responses):
   game = Game(_print = test_print, _input = test_input)
   player = game.get_player()
   game.make_bet(player)
+
+
+@pytest.mark.parametrize('name, cards', [
+  ('Player', [Card('Clubs', 'Ace'), Card('Hearts', '2')]),
+  ('Dealer', [Card('Clubs', 'Ace'), Card('Hearts', '2')]),
+])
+def test_game_make_deal(name, cards):
+  """
+  Seat is dealt cards.
+  """
+
+  game = Game()
+
+  if name == 'Player':
+    player = game.get_player()
+    game.make_deal(player, cards)
+
+    assert len(player.get_cards()) == 2
+    
+    for card in player.get_cards():
+      assert card.get_hidden() == False
+
+  elif name == 'Dealer':
+    dealer = game.get_dealer()
+    game.make_deal(dealer, cards)
+
+    assert len(dealer.get_cards()) == 2
+
+    dealer_cards = dealer.get_cards()
+    assert dealer_cards[0].get_hidden() == False
+    assert dealer_cards[1].get_hidden() == True

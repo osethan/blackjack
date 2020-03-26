@@ -16,6 +16,33 @@ class Seat:
     self.__totals = []
 
 
+  def get_cards(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__cards
+
+
+  def set_cards(self, cards):
+    """
+    Setter mutator.
+
+    In:
+    cards (Card[]): New state of a seat's cards.
+    """
+
+    self.__cards = cards
+
+
+  def get_name(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__name
+
+
   # def __str__(self):
   #   """
   #   Seat string representation:
