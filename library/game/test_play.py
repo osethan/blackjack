@@ -216,3 +216,58 @@ def test_check_player_natural(cards, expected):
   game.make_deal(player, cards)
   actual = game.check_player_natural(player)
   assert actual == expected
+
+
+@pytest.mark.parametrize('prints, inputs, responses, cards, card, expected', [
+  # Expected successes
+  # Player can and does hit
+  ([], [
+    'Do you want to hit? (y/n)'
+  ], [
+    'y'
+  ], [
+    Card('Clubs', 'Jack'),
+    Card('Clubs', 'Queen')
+  ], Card('Diamonds', '5'), True),
+  # Expected failures
+  # Player can't hit because they have bust
+  ([
+    'Player bust'
+  ], [
+    'Do you want to hit? (y/n)'
+  ], [
+    'y'
+  ], [
+    Card('Clubs', 'Jack'),
+    Card('Clubs', 'Queen'),
+    Card('Diamonds', '5')
+  ], None, False),
+  # Player stays
+  ([], [
+    'Do you want to hit? (y/n)'
+  ], [
+    'n'
+  ], [
+    Card('Clubs', 'Jack'),
+    Card('Clubs', 'Queen')
+  ], None, False)
+])
+def test_check_player_hit(prints, inputs, responses, cards, card, expected):
+  """
+  A player can hit, stay or bust.
+  """
+
+  def test_print(message):
+    _print = prints.pop(0)
+    assert _print == message
+
+  def test_input(message):
+    _input = inputs.pop(0)
+    assert _input == message
+    return responses.pop(0)
+
+  game = Game(_print = test_print, _input = test_input)
+  player = game.get_player()
+  game.make_deal(player, cards)
+  actual = game.check_player_hit(player, card)
+  assert actual == expected

@@ -152,27 +152,69 @@ class Game:
       seat_cards[1].set_hidden(True)
 
     seat.set_cards(seat_cards)
+    seat.set_totals()
 
 
-  def check_dealer_natural(self):
+  # def check_dealer_natural(self):
+  #   """
+  #   Check dealer for dealt natural before player plays.
+  #   """
+
+  #   dealer = self.get_dealer()
+  #   dealer_cards = dealer.get_cards()
+  #   player = self.get_player()
+  #   player_cards = player.get_cards()
+
+  #   # Dealer face card is ace so player can call insurance
+  #   if dealer_cards[0].get_pip() == 'Ace':
+  #     while not self.make_insurance(player):
+  #       continue
+
+  #     # # Dealer has natural so player wins insurance
+  #     # if dealer_cards[1].get_pip() in ['10', 'Jack', 'Queen', 'King']:
+  #     #   # Player wins double insurance bet
+  #     #   insurance_bet = player.get_insurance_bet()
+  #     #   player.set_insurance_bet(0)
+  #     #   player.set_purse(player.get_purse() + 2 * insurance_bet)
+
+  #     #   # Player keeps bet if they have natural
+  #     #   if self.check_player_natural(player):
+  #     #     bet = player.get_bet()
+  #     #     player.set_bet(0)
+  #     #     player.set_purse(player.get_purse() + bet)
+  #     #   else:
+  #     #     player.set_bet(0)
+  #     # # Dealer doesn't have natural so player loses insurance
+  #     # else:
+
+
+      #   # Hand is settled
+
+
+  def check_player_hit(self, player, card = None):
     """
-    Check dealer for dealt natural before player plays.
+    A player may be able to hit.
+
+    In:
+    player (Player): A player who may be able to hit.
+    card (Card): Optional card a player can take as hit.
     """
 
-    # Dealer face card is ace so player can call insurance
-    if 'Ace' == dealer_cards[0].get_pip():
-      while not self.make_insurance(self.get_player()):
-        continue
+    player_totals = player.get_totals()
+    if min(player_totals) < 22:
+      response = self.input('Do you want to hit? (y/n)')
 
-      # Dealer has natural
-      dealer_cards = self.get_dealer().get_cards()
-      if [ten for ten in ['10', 'Jack', 'Queen', 'King'] if ten in dealer_cards]:
-        # Player wins double insurance bet
-        insurance_bet = self.get_player().get_insurance_bet()
-        self.get_player().set_insurance_bet(0)
-        self.get_player().set_purse(self.get_player().get_purse() + 2 * insurance_bet)
+      if response != 'y':
+        return False
 
-        # Player keeps bet if they have natural
+      player_cards = player.get_cards()
+      card = self.get_pack().hit(card)
+      player_cards.append(card)
+      player.set_cards(player_cards)
+      return True
+    else:
+      self.print('Player bust')
+      return False
 
 
   def check_player_natural(self, player):

@@ -43,6 +43,57 @@ class Seat:
     return self.__name
 
 
+  def get_totals(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__totals
+
+
+  def set_totals(self):
+    """
+    Setter mutator.
+    """
+
+    values = {
+      '2': 2,
+      '3': 3,
+      '4': 4,
+      '5': 5,
+      '6': 6,
+      '7': 7,
+      '8': 8,
+      '9': 9,
+      '10': 10,
+      'Jack': 10,
+      'Queen': 10,
+      'King': 10
+    }
+
+    cards = self.get_cards()
+    totals = []
+    for card in cards:
+      pip = card.get_pip()
+      if len(totals) == 0:
+        if pip == 'Ace':
+          totals = [1, 11]
+        else:
+          totals = [values[pip]]
+      elif len(totals) == 1:
+        if pip == 'Ace':
+          totals = [totals[0] + 1, totals[1] + 11]
+        else:
+          totals = [totals[0] + values[pip]]
+      else:
+        if pip == 'Ace':
+          totals = [totals[0] + 1, totals[1] + 11]
+        else:
+          totals = [totals[0] + values[pip], totals[0] + values[pip]]
+
+    self.__totals = totals
+
+
   # def __str__(self):
   #   """
   #   Seat string representation:
