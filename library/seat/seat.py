@@ -33,6 +33,7 @@ class Seat:
     """
 
     self.__cards = cards
+    self.set_totals()
 
 
   def get_name(self):
@@ -209,6 +210,14 @@ class Player(Seat):
     """
 
     self.__insurance_bet = insurance_bet
+
+
+  # def set_double_down_bet(self):
+  #   """
+  #   Setter mutator.
+  #   """
+
+  #   self.__double_down_bet = self.get_
 
 
   # def __str__(self):

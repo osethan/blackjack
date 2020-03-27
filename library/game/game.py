@@ -1,5 +1,4 @@
 import re
-# import sys
 
 from library.pack.pack import Pack
 from library.seat.seat import Dealer, Player
@@ -152,7 +151,16 @@ class Game:
       seat_cards[1].set_hidden(True)
 
     seat.set_cards(seat_cards)
-    seat.set_totals()
+
+
+  def dealer_natural(self):
+    """
+    A dealer may have a natural.
+
+    Out:
+    (bool): A dealer has a natural.
+    """
+
 
 
   # def check_dealer_natural(self):
@@ -191,13 +199,16 @@ class Game:
       #   # Hand is settled
 
 
-  def check_player_hit(self, player, card = None):
+  def player_hit(self, player, _card = None):
     """
     A player may be able to hit.
 
     In:
     player (Player): A player who may be able to hit.
-    card (Card): Optional card a player can take as hit.
+    _card (Card): Optional card a player can take as hit.
+
+    Out:
+    (bool): A player's turn continues.
     """
 
     player_totals = player.get_totals()
@@ -208,7 +219,7 @@ class Game:
         return False
 
       player_cards = player.get_cards()
-      card = self.get_pack().hit(card)
+      card = self.get_pack().hit(_card)
       player_cards.append(card)
       player.set_cards(player_cards)
       return True
@@ -217,19 +228,70 @@ class Game:
       return False
 
 
-  def check_player_natural(self, player):
+  def dealer_hit(self, _card = None):
     """
-    Player may have dealt natural.
+    A dealer's hits are automated.
 
     In:
-    player (Player): A player who may have been dealt a natural.
+    _card (Card): Optional card to give to dealer from hit.
 
     Out:
-    (bool): A player has been dealt a natural.
+    (bool): A dealer's turn continues.
     """
 
-    player_cards = player.get_cards()
-    return len([pc for pc in player_cards if pc.get_pip() == 'Ace']) == 1 and len([pc for pc in player_cards if pc.get_pip() in ['10', 'Jack', 'Queen', 'King']]) == 1
+    dealer_totals = dealer.get_totals()
+    if max(dealer_totals) < 17:
+      dealer_cards = dealer.get_cards()
+      card = self.get_pack().hit(_card)
+      dealer_cards.append(card)
+      dealer.set_cards(dealer_cards)
+      return True
+    else:
+      pass
+
+
+  # def check_player_double_down(self, player, card = None):
+  #   """
+  #   A player may be able to double down.
+
+  #   In:
+  #   player (Player): A player who may be able to double down.
+  #   card (Card): Optional card a player can take as double down hit.
+
+  #   Out:
+  #   (bool): A player's turn continues.
+  #   """
+
+  #   player_totals = player.get_totals()
+  #   if sum(player_totals) in [9, 10, 11]:
+  #     response = self.input('Do you want to double down? (y/n)')
+
+  #     if response != 'y':
+  #       return True
+
+  #     # Get new card and give to player
+  #     new_card = self.get_pack.hit(card)
+  #     new_card.set_hidden(True)
+  #     player_cards = [player.get_cards(), new_card]
+  #     player.set_cards(player_cards)
+
+  #     # Set player double down bet
+  #     player.set
+
+
+  def seat_natural(self, seat):
+    """
+    A seat may have dealt natural.
+
+    In:
+    seat (Seat): A seat who may have been dealt a natural.
+
+    Out:
+    (bool): A seat has been dealt a natural.
+    """
+
+    seat_cards = seat.get_cards()
+    return [sc for sc in seat_cards if sc.get_pip() == 'Ace'] and [sc for sc in seat_cards if sc.get_pip() in ['10', 'Jack', 'Queen', 'King']]
 
 
   def make_insurance(self, player):
@@ -301,3 +363,21 @@ class Game:
 
 if __name__ == "__main__":
   game = Game()
+  player = game.get_player()
+  dealer = game.get_dealer()
+  
+  # Game loop
+  while 0 < sum(player.get_totals()) < 1000:
+    # Player makes bet
+    game.make_bet(player)
+
+    # Deal hands
+    game.make_deal(player)
+    game.make_deal(dealer)
+
+    # Player hits
+    while game.player_hit(player):
+      continue
+
+
+
