@@ -60,47 +60,8 @@ class Game:
 
     return self.__input(message)
 
-  # def __init__(self, seats = [Player(), Dealer()], _print = print, _prompt = input):
-  #   """
-  #   Game constructor.
-  #   """
-    
-  #   self.print = _print
-  #   self.prompt = _prompt
-  #   self.pack = Pack()
-  #   self.seats = seats
 
-
-  # def main(self):
-  #   """
-  #   Entry point of program execution.
-  #   """
-
-  #   if not self._welcome():
-  #     self._quit()
-
-  #   self.pack.shuffle()
-    
-  #   # Game loop
-
-  #   # Get bets from players
-  #   for i, seat in enumerate(self.seats):
-  #     if i >= len(self.seats) - 1:
-  #       continue
-
-  #     while True:
-  #       if self._bet(seat):
-  #         break
-
-  #   # Deal cards to all seats
-  #   for i in range(2 * len(self.seats)):
-  #     game._deal(self.seats, i)
-
-  #   # for seat in self.seats:
-  #   #   self.print(seat)
-
-
-  def make_bet(self, player):
+  def bet(self, player):
     """
     Ask player for bet.
 
@@ -153,13 +114,14 @@ class Game:
     seat.set_cards(seat_cards)
 
 
-  def dealer_natural(self):
-    """
-    A dealer may have a natural.
+  # def dealer_natural(self):
+  #   """
+  #   A dealer may have a natural.
 
-    Out:
-    (bool): A dealer has a natural.
-    """
+  #   Out:
+  #   (bool): A dealer has a natural.
+  #   """
+  #   pass
 
 
 
@@ -199,55 +161,55 @@ class Game:
       #   # Hand is settled
 
 
-  def player_hit(self, player, _card = None):
-    """
-    A player may be able to hit.
+  # def player_hit(self, player, _card = None):
+  #   """
+  #   A player may be able to hit.
 
-    In:
-    player (Player): A player who may be able to hit.
-    _card (Card): Optional card a player can take as hit.
+  #   In:
+  #   player (Player): A player who may be able to hit.
+  #   _card (Card): Optional card a player can take as hit.
 
-    Out:
-    (bool): A player's turn continues.
-    """
+  #   Out:
+  #   (bool): A player's turn continues.
+  #   """
 
-    player_totals = player.get_totals()
-    if min(player_totals) < 22:
-      response = self.input('Do you want to hit? (y/n)')
+  #   player_totals = player.get_totals()
+  #   if min(player_totals) < 22:
+  #     response = self.input('Do you want to hit? (y/n)')
 
-      if response != 'y':
-        return False
+  #     if response != 'y':
+  #       return False
 
-      player_cards = player.get_cards()
-      card = self.get_pack().hit(_card)
-      player_cards.append(card)
-      player.set_cards(player_cards)
-      return True
-    else:
-      self.print('Player bust')
-      return False
+  #     player_cards = player.get_cards()
+  #     card = self.get_pack().hit(_card)
+  #     player_cards.append(card)
+  #     player.set_cards(player_cards)
+  #     return True
+  #   else:
+  #     self.print('Player bust')
+  #     return False
 
 
-  def dealer_hit(self, _card = None):
-    """
-    A dealer's hits are automated.
+  # def dealer_hit(self, _card = None):
+  #   """
+  #   A dealer's hits are automated.
 
-    In:
-    _card (Card): Optional card to give to dealer from hit.
+  #   In:
+  #   _card (Card): Optional card to give to dealer from hit.
 
-    Out:
-    (bool): A dealer's turn continues.
-    """
+  #   Out:
+  #   (bool): A dealer's turn continues.
+  #   """
 
-    dealer_totals = dealer.get_totals()
-    if max(dealer_totals) < 17:
-      dealer_cards = dealer.get_cards()
-      card = self.get_pack().hit(_card)
-      dealer_cards.append(card)
-      dealer.set_cards(dealer_cards)
-      return True
-    else:
-      pass
+  #   dealer_totals = dealer.get_totals()
+  #   if max(dealer_totals) < 17:
+  #     dealer_cards = dealer.get_cards()
+  #     card = self.get_pack().hit(_card)
+  #     dealer_cards.append(card)
+  #     dealer.set_cards(dealer_cards)
+  #     return True
+  #   else:
+  #     pass
 
 
   # def check_player_double_down(self, player, card = None):
@@ -294,43 +256,43 @@ class Game:
     return [sc for sc in seat_cards if sc.get_pip() == 'Ace'] and [sc for sc in seat_cards if sc.get_pip() in ['10', 'Jack', 'Queen', 'King']]
 
 
-  def make_insurance(self, player):
-    """
-    Player can call insurance.
+  # def make_insurance(self, player):
+  #   """
+  #   Player can call insurance.
 
-    In:
-    player (Player): A player deciding to make insurance.
+  #   In:
+  #   player (Player): A player deciding to make insurance.
 
-    Out:
-    (bool): A player has made insurance.
-    """
+  #   Out:
+  #   (bool): A player has made insurance.
+  #   """
 
-    # Player decides to take insurance
-    response = self.input('Dealer has has an ace. Do you want insurance? (y/n)')
-    if response != 'y':
-      return False
+  #   # Player decides to take insurance
+  #   response = self.input('Dealer has has an ace. Do you want insurance? (y/n)')
+  #   if response != 'y':
+  #     return False
 
-    # Player decides size of insurance
-    pattern = r'^\d+$'
-    insurance_bet = 0
-    insurance_bet = self.input('Can take up to half original bet. How much insurance do you want?')
+  #   # Player decides size of insurance
+  #   pattern = r'^\d+$'
+  #   insurance_bet = 0
+  #   insurance_bet = self.input('Can take up to half original bet. How much insurance do you want?')
 
-    # Insurance bet isn't an integer
-    if not re.match(pattern, insurance_bet):
-      self.print('Can only bet whole number of chips')
-      return False
+  #   # Insurance bet isn't an integer
+  #   if not re.match(pattern, insurance_bet):
+  #     self.print('Can only bet whole number of chips')
+  #     return False
 
-    insurance_bet = int(insurance_bet)
+  #   insurance_bet = int(insurance_bet)
 
-    # Insurance bet is too low or high
-    player_bet = player.get_bet()
-    if insurance_bet < 2 or insurance_bet > player_bet // 2:
-      self.print(f'Can only bet 2 - {player_bet // 2} chips')
-      return False
+  #   # Insurance bet is too low or high
+  #   player_bet = player.get_bet()
+  #   if insurance_bet < 2 or insurance_bet > player_bet // 2:
+  #     self.print(f'Can only bet 2 - {player_bet // 2} chips')
+  #     return False
 
-    player.set_purse(player.get_purse() - insurance_bet)
-    player.set_insurance_bet(insurance_bet)
-    return True
+  #   player.set_purse(player.get_purse() - insurance_bet)
+  #   player.set_insurance_bet(insurance_bet)
+  #   return True
 
 
 
@@ -363,21 +325,18 @@ class Game:
 
 if __name__ == "__main__":
   game = Game()
-  player = game.get_player()
-  dealer = game.get_dealer()
+  # player = game.get_player()
+  # dealer = game.get_dealer()
   
-  # Game loop
-  while 0 < sum(player.get_totals()) < 1000:
-    # Player makes bet
-    game.make_bet(player)
+  # # Game loop
+  # while 0 < sum(player.get_totals()) < 1000:
+  #   # Player makes bet
+  #   game.make_bet(player)
 
-    # Deal hands
-    game.make_deal(player)
-    game.make_deal(dealer)
+  #   # Deal hands
+  #   game.make_deal(player)
+  #   game.make_deal(dealer)
 
-    # Player hits
-    while game.player_hit(player):
-      continue
-
-
-
+  #   # Player hits
+  #   while game.player_hit(player):
+  #     continue

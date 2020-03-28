@@ -1,4 +1,4 @@
-# from pack import Card
+from library.card.card import Hand
 
 
 class Seat:
@@ -11,135 +11,35 @@ class Seat:
     Seat ctor.
     """
 
-    self.__name = ''
-    self.__cards = []
-    self.__totals = []
+    self.__title = ''
+    self.__hand = Hand()
 
 
-  def get_cards(self):
+  def get_title(self):
     """
     Getter accessor.
     """
 
-    return self.__cards
+    return self.__title
 
 
-  def set_cards(self, cards):
+  def get_hand(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__hand
+
+
+  def set_hand(self, cards = []):
     """
     Setter mutator.
 
     In:
-    cards (Card[]): New state of a seat's cards.
+    cards (Card[]): New cards in a hand.
     """
 
-    self.__cards = cards
-    self.set_totals()
-
-
-  def get_name(self):
-    """
-    Getter accessor.
-    """
-
-    return self.__name
-
-
-  def get_totals(self):
-    """
-    Getter accessor.
-    """
-
-    return self.__totals
-
-
-  def set_totals(self):
-    """
-    Setter mutator.
-    """
-
-    values = {
-      '2': 2,
-      '3': 3,
-      '4': 4,
-      '5': 5,
-      '6': 6,
-      '7': 7,
-      '8': 8,
-      '9': 9,
-      '10': 10,
-      'Jack': 10,
-      'Queen': 10,
-      'King': 10
-    }
-
-    cards = self.get_cards()
-    totals = []
-    for card in cards:
-      pip = card.get_pip()
-      if len(totals) == 0:
-        if pip == 'Ace':
-          totals = [1, 11]
-        else:
-          totals = [values[pip]]
-      elif len(totals) == 1:
-        if pip == 'Ace':
-          totals = [totals[0] + 1, totals[1] + 11]
-        else:
-          totals = [totals[0] + values[pip]]
-      else:
-        if pip == 'Ace':
-          totals = [totals[0] + 1, totals[1] + 11]
-        else:
-          totals = [totals[0] + values[pip], totals[0] + values[pip]]
-
-    self.__totals = totals
-
-
-  # def __str__(self):
-  #   """
-  #   Seat string representation:
-  #   """
-
-  #   seat_str = f'\n{self.name}\n---\nCards: '
-  #   for i, card in enumerate(self.cards):
-  #     seat_str += f'{card}'
-  #     if i != len(self.cards) - 1:
-  #       seat_str += ', '
-  #   seat_str += '\n'
-
-  #   return seat_str
-
-
-  # def add_card(self, card):
-  #   """
-  #   Add card to rear of cards.
-
-  #   In:
-  #   card (Card): Card being added to rear of cards.
-  #   """
-
-  #   # Add card to hand
-  #   self.cards += [card]
-    
-  #   # Update hand scores
-  #   if len(self.totals) == 0:
-  #     if card.pip == 'Ace':
-  #       self.totals = [1, 11]
-  #     else:
-  #       self.totals = [Card.VALUE[card.pip]]
-  #   elif len(self.totals) == 1:
-  #     if card.pip == 'Ace':
-  #       self.totals += [self.totals[0] + 11]
-  #       self.totals[0] = self.totals[0] + 1
-  #     else:
-  #       self.totals[0] = self.totals[0] + Card.VALUE[card.pip]
-  #   else:
-  #     if card.pip == 'Ace':
-  #       self.totals[0] = self.totals[0] + 1
-  #       self.totals[1] = self.totals[1] + 11
-  #     else:
-  #       self.totals[0] = self.totals[0] + Card.VALUE[card.pip]
-  #       self.totals[1] = self.totals[1] + Card.VALUE[card.pip]
+    self.__hand = Hand(cards)
 
 
 class Player(Seat):
@@ -154,14 +54,9 @@ class Player(Seat):
 
     super().__init__()
 
-    self.__name = 'Player'
-    self.__purse = 200
-    self.__bet = 0
-    self.__insurance_bet = 0
-    self.__double_down_bet = 0
-    self.__split_pair_bets = []
-    self.__split_pair_hands = []
-    self.__split_pair_totals = []
+    self.__title = 'Player'
+    self.__purse = Purse()
+    self.__bet = Bet()
 
 
   def get_bet(self):
@@ -169,7 +64,18 @@ class Player(Seat):
     Getter accessor.
     """
 
-    return self.__bet
+    return self.__bet.get_size()
+
+
+  def set_bet(self, bet):
+    """
+    Setter mutator.
+
+    In:
+    bet (int): New size of bet.
+    """
+
+    self.__bet.set_size(bet)
 
 
   def get_purse(self):
@@ -177,59 +83,18 @@ class Player(Seat):
     Getter accessor.
     """
 
-    return self.__purse
-
-
-  def get_insurance_bet(self):
-    """
-    Getter accessor.
-    """
-
-    return self.__insurance_bet
+    return self.__purse.get_size()
 
 
   def set_purse(self, purse):
     """
     Setter mutator.
+
+    In:
+    purse (int): New size of purse.
     """
 
-    self.__purse = purse
-
-
-  def set_bet(self, bet):
-    """
-    Setter mutator.
-    """
-
-    self.__bet = bet
-
-
-  def set_insurance_bet(self, insurance_bet):
-    """
-    Setter mutator.
-    """
-
-    self.__insurance_bet = insurance_bet
-
-
-  # def set_double_down_bet(self):
-  #   """
-  #   Setter mutator.
-  #   """
-
-  #   self.__double_down_bet = self.get_
-
-
-  # def __str__(self):
-  #   """
-  #   Player string representation.
-  #   """
-
-  #   player_str = super().__str__()
-  #   player_str += f'Totals: {self.totals}'
-  #   player_str += f'\nBet: {self.bet}'
-
-  #   return player_str
+    self.__purse.set_size(purse)
 
 
 class Dealer(Seat):
@@ -244,4 +109,68 @@ class Dealer(Seat):
 
     super().__init__()
 
-    self.__name = 'Dealer'
+    self.__title = 'Dealer'
+
+
+class Bet:
+  """
+  A player bet made in Blackjack.
+  """
+
+  def __init__(self):
+    """
+    Bet ctor.
+    """
+
+    self.__size = 0
+
+  
+  def get_size(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__size
+
+
+  def set_size(self, size):
+    """
+    Setter mutator.
+
+    In:
+    size (int): New size of bet.
+    """
+
+    self.__size = size
+
+
+class Purse:
+  """
+  A purse of a player in Blackjack.
+  """
+
+  def __init__(self):
+    """
+    Purse ctor.
+    """
+
+    self.__size = 200
+
+
+  def get_size(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__size
+
+
+  def set_size(self, size):
+    """
+    Setter mutator.
+
+    In:
+    size (int): New size of bet.
+    """
+
+    self.__size = size

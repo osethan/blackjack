@@ -1,6 +1,6 @@
 import pytest
 
-from library.pack.pack import Pack, Card
+from library.card.card import Pack, Card
 
 
 @pytest.mark.parametrize('suit, pip', [

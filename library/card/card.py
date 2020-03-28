@@ -1,5 +1,6 @@
 import random
 
+
 class Pack:
   """
   Six standard 52 card decks used to play Blackjack.
@@ -83,8 +84,8 @@ class Pack:
 
     cards = self.get_cards()
     if _card:
-      for i, pack_card in enumerate(cards):
-        if _card.get_suit() == pack_card.get_suit() and _card.get_pip() == pack_card.get_pip():
+      for i, pc in enumerate(cards):
+        if _card.get_suit() == pc.get_suit() and _card.get_pip() == pc.get_pip():
           card = cards.pop(i)
           self.set_cards(cards)
           return card
@@ -111,9 +112,6 @@ class Card:
     suit (string): One of Clubs, Diamonds, Hearts or Spades.
     pip (string): One of 2 - 10, Jack, Queen, King or Ace.
     """
-    
-    if suit not in Card.SUITS or pip not in Card.PIPS:
-      return None
 
     self.__suit = suit
     self.__pip = pip
@@ -144,26 +142,80 @@ class Card:
     return self.__hidden
 
 
-  # def __str__(self):
-  #   """
-  #   String representation of a card.
-
-  #   Out:
-  #   (str): The string representation of a card.
-  #   """
-
-  #   if not self.hidden:
-  #     return str((self.suit, self.pip))
-  #   else:
-  #     return "('*', '*')"
-
-
   def set_hidden(self, value):
     """
     Change if a card is hidden or visible.
 
     In:
-    value (bool): Whether a card is hidden or visible.
+    value (boolean): Whether a card is hidden or visible.
     """
 
     self.__hidden = value
+
+
+class Hand:
+  """
+  A hand in Blackjack.
+  """
+
+  def __init__(self, cards = []):
+    """
+    Hand ctor.
+    """
+
+    self.__cards = cards
+    self.__scores = []
+
+    if cards:
+      self.set_scores()
+
+
+  def get_cards(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__cards
+
+
+  def set_scores(self):
+    """
+    Setter mutator.
+    """
+
+    values = {
+      '2': 2,
+      '3': 3,
+      '4': 4,
+      '5': 5,
+      '6': 6,
+      '7': 7,
+      '8': 8,
+      '9': 9,
+      '10': 10,
+      'Jack': 10,
+      'Queen': 10,
+      'King': 10
+    }
+
+    cards = self.get_cards()
+    scores = []
+    for card in cards:
+      pip = card.get_pip()
+      if len(scores) == 0:
+        if pip == 'Ace':
+          scores = [1, 11]
+        else:
+          scores = [values[pip]]
+      elif len(scores) == 1:
+        if pip == 'Ace':
+          scores = [scores[0] + 1, scores[1] + 11]
+        else:
+          scores = [scores[0] + values[pip]]
+      else:
+        if pip == 'Ace':
+          scores = [scores[0] + 1, scores[1] + 11]
+        else:
+          scores = [scores[0] + values[pip], scores[0] + values[pip]]
+
+    self.__scores = scores
