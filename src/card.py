@@ -28,5 +28,7 @@ class Card:
     Getter.
 
     Out:
-    (str)
+    (str): A card's pip.
     """
+
+    return self.__pip
