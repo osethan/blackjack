@@ -1,134 +1,257 @@
-import re
-import sys
-
-from pack import Pack
+# from library.card.card import Pack
+# from library.seat.seat import Dealer, Player
+# from library.system.system import System
+from card import Pack
 from seat import Dealer, Player
+from system import System
 
 
 class Game:
   """
-  Runs play of Blackjack.
+  Play Blackjack.
   """
 
-  def __init__(self, seats = [Player(), Dealer()], _print = print, _prompt = input):
+  def __init__(self, system = System()):
     """
-    Game constructor.
-    """
-    
-    self.print = _print
-    self.prompt = _prompt
-    self.pack = Pack()
-    self.seats = seats
-
-
-  def main(self):
-    """
-    Entry point of program execution.
+    Game ctor.
     """
 
-    if not self._welcome():
-      self._quit()
+    pack = Pack()
+    pack.shuffle()
 
-    self.pack.shuffle()
-    
-    # Game loop
-
-    # Get bets from players
-    for i, seat in enumerate(self.seats):
-      if i >= len(self.seats) - 1:
-        continue
-
-      while True:
-        if self._bet(seat):
-          break
-
-    # Deal cards to all seats
-    for i in range(2 * len(self.seats)):
-      game._deal(self.seats, i)
-
-    for seat in self.seats:
-      print(seat)
-      # for card in seat.cards:
-      #   print(card)
-
-      # print()
+    self.__pack = pack
+    self.__player = Player()
+    self.__dealer = Dealer()
+    self.__system = system
 
 
-  def _bet(self, player):
+  def get_player(self):
     """
-    Ask player how much they'd like to bet
+    Getter accessor.
     """
 
-    p = r'^\d+$'
-    bet = self.prompt(f'You have {player.purse} chips. What is your bet?')
+    return self.__player
 
-    if not re.match(p, bet):
-      self.print('Can only bet whole number of chips')
-      return False
 
-    bet = int(bet)
-
-    if bet < 2 or bet > 500 or bet > player.purse:
-      self.print('Can only bet $2 - $500 and no more than purse')
-      return False
-
-    player.bet = bet
-    player.purse = player.purse - bet
-
-    return True
-
-  
-  def _deal(self, seats, i, _card = None):
+  def get_dealer(self):
     """
-    Deal a card to a seat.
+    Getter accessor.
+    """
+
+    return self.__dealer
+
+
+  def get_pack(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__pack
+
+
+  def sys(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__system
+
+
+  # Instance methods
+
+
+  def welcome(self):
+    """
+    Welcome player to Blackjack.
+
+    Response codes:
+    0) Ok
+    1) Exit
+
+    Out:
+    (int): Response code.
+    """
+
+    self.sys().print('Welcome to Blackjack!')
+    self.sys().print('Start with 200 chips and try to reach 1,000')
+    self.sys().print('Can only bet between 2 - 500 chips and no more than purse')
+    res = self.sys().input('Do you want to play? (y/n)')
+
+    if res == 'y':
+      return 0
+    else:
+      return 1
+
+
+  def bet(self):
+    """
+    Bet stage of Blackjack.
+
+    Response codes:
+    0) Ok
+    1) Exit
+
+    Out:
+    (int): Response code.
+    """
+
+    self.sys().print(f'Purse is {self.get_player().get_purse()}. What is your bet?')
+    return self.get_player().bet(self.sys())
+
+
+  def deal(self, cards = []):
+    """
+    Deal stage of Blackjack.
 
     In:
-    seats (list[Seat]): All seats playing Blackjack.
-    i (int): Seat index modulus number of seats.
+    cards (Card[]): Optional ordered list of 4 cards to deal.
     """
 
-    # Find seat
-    seat = seats[i % len(seats)]
-    
-    # Find card
-    card = None
-    if _card:
-      card = self.pack.hit(str(_card))
+    if cards:
+      self.get_player().set_hand(self.get_player().get_hand().get_cards() + [self.get_pack().hit(cards[0])])
+      self.get_dealer().set_hand(self.get_dealer().get_hand().get_cards() + [self.get_pack().hit(cards[1])])
+      self.get_player().set_hand(self.get_player().get_hand().get_cards() + [self.get_pack().hit(cards[2])])
+      self.get_dealer().set_hand(self.get_dealer().get_hand().get_cards() + [self.get_pack().hit(cards[3]).set_hidden(True)])
     else:
-      card = self.pack.hit()
-
-    # Set card hidden or visible
-    if i == 2 * len(seats) - 1:
+      self.get_player().set_hand(self.get_player().get_hand().get_cards() + [self.get_pack().hit()])
+      self.get_dealer().set_hand(self.get_dealer().get_hand().get_cards() + [self.get_pack().hit()])
+      self.get_player().set_hand(self.get_player().get_hand().get_cards() + [self.get_pack().hit()])
+      card = self.get_pack().hit()
       card.set_hidden(True)
-
-    # Seat gets card
-    seat.add_card(card)
+      self.get_dealer().set_hand(self.get_dealer().get_hand().get_cards() + [card])
 
 
-  def _welcome(self):
+  def natural(self):
     """
-    Print game starting text.
+    Natural dealt in Blackjack.
+
+    Response codes:
+    0) Ok
+    1) Next round
+    2) Exit program
+
+    Out:
+    (int): Response code.
     """
 
+    if self.get_dealer().natural() and self.get_player().natural():
+      self.settle('DEALER_PLAYER_NATURAL')
+      return 1
+    elif self.get_dealer().natural():
+      self.settle('DEALER_NATURAL')
+      return 1
+    elif self.get_player().natural():
+      self.settle('PLAYER_NATURAL')
+      return 1
+    
+    return 0
+
+
+  def hit(self):
+    """
+    A player then a dealer hit.
+
+    Status codes:
+    0) Ok
+    1) Player bust
+    2) Dealer bust
+
+    Out:
+    (string): Status code.
+    """
+
+    # Player hit
     while True:
-      res = self.prompt('Welcome to Blackjack! Do you want to play? (y/n)')
+      self.sys().print(f'Score is {self.get_player().get_hand().get_score()}. Do you want to hit? (y/n)')
+      res = self.get_player().hit(self.get_pack(), self.sys())
+      if res == 0:
+        continue
+      elif res == 1:
+        break
+      elif res == 2:
+        self.settle('PLAYER_BUST')
+        return 1
 
-      if res == 'n':
-        return False
+    # Dealer hit
+    while True:
+      res = self.get_dealer().hit(self.get_pack())
+      if res == 0:
+        continue
+      elif res == 1:
+        break
+      elif res == 2:
+        self.settle('DEALER_BUST')
+        return 2
 
-      if res == 'y':
-        return True
+    return 0
 
 
-  def _quit(self):
+  def settle(self, type):
     """
-    Quit playing Blackjack.
+    Settle a hand of Blackjack.
+
+    Types:
+    DEALER_PLAYER_NATURAL) A dealer and a player both have a natural
+    DEALER_NATURAL) A dealer has a natural
+    PLAYER_NATURAL) A player has a natural
+    PLAYER_BUST) A player scores over 21
+    DEALER_BUST) A dealer scores over 21
+    HAND) A player and a dealer compare hands
+
+    In:
+    type (string): The settle method to apply.
     """
 
-    self.print('Come again soon')
-    sys.exit(0)
+    if type == 'DEALER_PLAYER_NATURAL':
+      self.get_player().tie()
+    elif type == 'DEALER_NATURAL':
+      self.get_player().lose()
+    elif type == 'PLAYER_NATURAL':
+      self.get_player().win()      
+    elif type == 'PLAYER_BUST':
+      self.get_player().lose()
+    elif type == 'DEALER_BUST':
+      self.get_player().win()
+    elif type == 'HAND':
+      player_score = self.get_player().get_hand().get_score()
+      dealer_score = self.get_dealer().get_hand().get_score()
+      if player_score == dealer_score:
+        self.get_player().tie()
+      elif player_score > dealer_score:
+        self.get_player().win()
+      elif player_score < dealer_score:
+        self.get_player().lose()
+
+    self.get_player().clear_hand()
+    self.get_dealer().clear_hand()
 
 
 if __name__ == "__main__":
   game = Game()
-  game.main()
+
+  # Game opener
+  res = game.welcome()
+  if res == 1:
+    game.sys().exit('Come again soon')
+
+  # Game loop
+  while 0 < game.get_player().get_purse() < 1000:
+    res = game.bet()
+    if res == 1:
+      game.sys().exit('Come again soon')
+
+    game.deal()
+
+    res = game.natural()
+    if res == 1:
+      continue
+
+    res = game.hit()
+    if res == 1:
+      continue
+    elif res == 2:
+      continue
+
+    game.settle('HAND')
+
+  game.sys().exit('Come again soon')
