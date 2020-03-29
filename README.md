@@ -244,8 +244,8 @@ The player is told when they win the game
 
 # Domain Modeling
 
-## Class Model
-![Class Model](/models/class_model.png)
+## Class Diagram
+![Class Model](/models/class_diagram_3.png)
 
 ## Sequence Diagram
 ![Sequence Diagram](/models/sequence_diagram.png)
