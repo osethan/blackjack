@@ -16,6 +16,17 @@ class Seat:
     self.__hand = Hand()
 
 
+  def get_hand(self):
+    """
+    Getter.
+
+    Out:
+    (Hand): A seat's hand.
+    """
+    
+    return self.__hand
+
+
 class Dealer(Seat):
   """
   A dealer in Blackjack
@@ -42,3 +53,37 @@ class Player(Seat):
     super().__init__()
     self.__bet = Bet(0)
     self.__purse = Purse()
+
+
+  def get_bet(self):
+    """
+    Getter.
+
+    Out:
+    (Bet): A player's bet.
+    """
+
+    return self.__bet
+  
+
+  def get_purse(self):
+    """
+    Getter.
+
+    Out:
+    (Purse): A player's purse.
+    """
+
+    return self.__purse
+
+
+  def tie(self):
+    """
+    A player's hand ties with a dealer's hand.
+    """
+    
+    bet = self.get_bet()
+    purse = self.get_purse()
+
+    purse.set_size(purse.get_size() + bet.get_size())
+    bet.set_size(0)
