@@ -77,6 +77,34 @@ class Player(Seat):
     return self.__purse
 
 
+  # Instance methods
+
+
+  def win(self):
+    """
+    A player's hand wins and a dealer's hand loses.
+    """
+
+    bet = self.get_bet()
+    purse = self.get_purse()
+
+    purse.set_size(purse.get_size() + bet.get_size() * 2)
+
+    # A player's win by natural
+    if self.get_hand().natural():
+      purse.set_size(purse.get_size() + bet.get_size() // 2)
+
+    bet.set_size(0)
+  
+  
+  def loss(self):
+    """
+    A player's hand loses and a dealer's hand wins.
+    """
+
+    self.get_bet().set_size(0)
+
+
   def tie(self):
     """
     A player's hand ties with a dealer's hand.
@@ -87,3 +115,21 @@ class Player(Seat):
 
     purse.set_size(purse.get_size() + bet.get_size())
     bet.set_size(0)
+
+
+  # Helper methods
+
+
+  def make_bet(self, size):
+    """
+    A player's bet and purse change when they make a bet.
+
+    In:
+    size (int): A player's bet's size.
+    """
+
+    bet = self.get_bet()
+    purse = self.get_purse()
+
+    bet.set_size(size)
+    purse.set_size(purse.get_size() - bet.get_size())
