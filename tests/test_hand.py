@@ -11,7 +11,8 @@ from src.hand import Hand
   # Expected failures
   ([Card('Clubs', '2'), Card('Hearts', '3')], False),
   ([Card('Diamonds', '10'), Card('Diamonds', 'Queen')], False),
-  ([Card('Spades', 'Ace'), Card('Hearts', 'Ace')], False)
+  ([Card('Spades', 'Ace'), Card('Hearts', 'Ace')], False),
+  ([Card('Spades', 'Ace'), Card('Hearts', 'Jack'), Card('Diamonds', '2')], False)
 ])
 def test_hand_natural(cards, expected):
   """

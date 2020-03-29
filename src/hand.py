@@ -50,7 +50,7 @@ class Hand:
     """
 
     cards = self.get_cards()
-    if [card for card in cards if card.get_pip() == 'Ace'] and [card for card in cards if card.get_pip() in ['10', 'Jack', 'Queen', 'King']]:
+    if [card for card in cards if card.get_pip() == 'Ace'] and [card for card in cards if card.get_pip() in ['10', 'Jack', 'Queen', 'King']] and len(cards) == 2:
       return True
     else:
       return False
