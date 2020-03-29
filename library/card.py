@@ -112,8 +112,8 @@ class Card:
     Card ctor.
 
     In:
-    suit (string): One of Clubs, Diamonds, Hearts or Spades.
-    pip (string): One of 2 - 10, Jack, Queen, King or Ace.
+    suit (str): One of Clubs, Diamonds, Hearts or Spades.
+    pip (str): One of 2 - 10, Jack, Queen, King or Ace.
     """
 
     self.__suit = suit
