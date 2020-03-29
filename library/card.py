@@ -59,12 +59,15 @@ class Pack:
     random (function): Set random behavior.
     """
 
+    if len(self.get_cards()) < 6 * 52:
+      self = Pack()
+
     for i, card in enumerate(self.get_cards()):
       swap_idx = -1
       if _random:
         swap_idx = _random(0, len(self.get_cards()) - 1)
       else:
-        swap_idx = random.randint(0, len(self.cards) - 1)
+        swap_idx = random.randint(0, len(self.get_cards()) - 1)
 
       swap_card = self.get_cards()[swap_idx]
       self.set_card(swap_idx, card)
@@ -90,7 +93,7 @@ class Pack:
           self.set_cards(cards)
           return card
 
-    card = cards.pip(0)
+    card = cards.pop(0)
     self.set_cards(cards)
     return card
 
@@ -178,6 +181,14 @@ class Hand:
     return self.__cards
 
 
+  def get_scores(self):
+    """
+    Getter accessor.
+    """
+
+    return self.__scores
+
+
   def set_scores(self):
     """
     Setter mutator.
@@ -209,13 +220,40 @@ class Hand:
           scores = [values[pip]]
       elif len(scores) == 1:
         if pip == 'Ace':
-          scores = [scores[0] + 1, scores[1] + 11]
+          scores = [scores[0] + 1, scores[0] + 11]
         else:
           scores = [scores[0] + values[pip]]
-      else:
+      elif len(scores) == 2:
         if pip == 'Ace':
           scores = [scores[0] + 1, scores[1] + 11]
         else:
-          scores = [scores[0] + values[pip], scores[0] + values[pip]]
+          scores = [scores[0] + values[pip], scores[1] + values[pip]]
 
     self.__scores = scores
+
+
+  def get_score(self):
+    """
+    Getter accessor.
+    """
+
+    scores = self.get_scores()
+    for score in scores[-1::-1]:
+      if score < 22:
+        return score
+
+    return scores[0]
+
+
+  # Instance methods
+
+
+  def natural(self):
+    """
+    A hand is a natural.
+
+    Out:
+    (boolean): A hand is a natural.
+    """
+
+    return len(self.get_cards()) == 2 and self.get_score() == 21
