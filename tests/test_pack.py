@@ -1,3 +1,5 @@
+import pytest
+
 from src.pack import Pack
 
 
@@ -21,6 +23,24 @@ def test_pack_shuffle():
   actual = shuffled_pips 
   
   assert actual == expected
+
+
+@pytest.mark.parametrize('cards', [
+  # Expected successes
+  # Full pack's cards
+  (Pack().get_cards()),
+  # Unfull pack's cards
+  (Pack().get_cards()[:10])
+])
+def test_pack_shuffle_size(cards):
+  """
+  A full or unfull pack shuffles as a full pack.
+  """
+
+  pack = Pack()
+  pack.set_cards(cards)
+  pack.shuffle()
+  assert len(pack.get_cards()) == 6 * 52
 
 
 def test_pack_hit():

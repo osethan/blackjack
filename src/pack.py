@@ -56,6 +56,9 @@ class Pack:
     _random (function): Random integer between x and y inclusive.
     """
 
+    if len(self.get_cards()) < 6 * 52:
+      self.set_cards(Pack().get_cards())
+
     cards = self.get_cards()
 
     for i, card in enumerate(cards):
