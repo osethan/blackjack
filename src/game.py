@@ -1,3 +1,4 @@
+import random
 import re
 
 from src.seat import Dealer, Player
@@ -9,13 +10,13 @@ class Game:
   Game of Blackjack.
   """
 
-  def __init__(self, _print = print, _input = input):
+  def __init__(self, _print = print, _input = input, _random = random.randint):
     """
     Game ctor.
     """
 
     pack = Pack()
-    pack.shuffle()
+    pack.shuffle(_random)
 
     self.__dealer = Dealer()
     self.__player = Player()
@@ -121,6 +122,29 @@ class Game:
       return 0
 
 
+  def deal(self):
+    """
+    Cards are dealt for a hand in Blackjack.
+    """
+
+    # Range is the number of seats * 2
+    for i in range(4):
+      card = self.get_pack().hit()
+
+      # A dealer's second card, last card dealt, is face down
+      if i == 3:
+        card.set_hidden(True)
+
+      # Modulo the number of seats
+      hand = None
+      if i % 2 == 0:
+        hand = self.get_player().get_hand()
+      elif i % 2 == 1:
+        hand = self.get_dealer().get_hand()
+
+      hand.set_cards(hand.get_cards() + [card])
+
+
   def exit(self):
     """
     Exit Blackjack.
@@ -130,15 +154,15 @@ class Game:
 
 
 if __name__ == "__main__":
-  game = Game()
-  
-  status = game.welcome()
-  if status == 1:
-    game.exit()
-  else:
+  def main():
+    game = Game()
+
+    status = game.welcome()
+    if status == 1:
+      return
 
     status = game.bet()
     if status == 1:
-      game.exit()
-    else:
-      pass
+      return
+
+  main()

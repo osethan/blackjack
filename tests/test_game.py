@@ -1,5 +1,6 @@
 import pytest
 
+from src.card import Card
 from src.game import Game
 
 
@@ -148,3 +149,35 @@ def test_game_bet(prints, prompts, inputs, purse):
     game.get_player().get_purse().set_size(purse)
 
   game.bet()
+
+
+def test_game_deal():
+  """
+  A hand is dealt to a player and a dealer.
+  """
+
+  def _random(start, end):
+    return start
+
+  game = Game(_random = _random)
+  game.deal()
+
+  hidden_card = Card('Clubs', '4')
+  hidden_card.set_hidden(True)
+  expected_dealer_cards = [Card('Clubs', '2'), hidden_card]
+  expected_player_cards = [Card('Spades', 'Ace'), Card('Clubs', '3')]
+
+  actual_dealer_cards = game.get_dealer().get_hand().get_cards()
+  actual_player_cards = game.get_player().get_hand().get_cards()
+
+  assert len(actual_dealer_cards) == len(expected_dealer_cards)
+  for i in range(len(actual_dealer_cards)):
+    assert actual_dealer_cards[i].get_suit() == expected_dealer_cards[i].get_suit()
+    assert actual_dealer_cards[i].get_pip() == expected_dealer_cards[i].get_pip()
+    assert actual_dealer_cards[i].get_hidden() == expected_dealer_cards[i].get_hidden()
+
+  assert len(actual_player_cards) == len(expected_player_cards)
+  for i in range(len(actual_player_cards)):
+    assert actual_player_cards[i].get_suit() == expected_player_cards[i].get_suit()
+    assert actual_player_cards[i].get_pip() == expected_player_cards[i].get_pip()
+    assert actual_player_cards[i].get_hidden() == expected_player_cards[i].get_hidden()

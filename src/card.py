@@ -32,3 +32,36 @@ class Card:
     """
 
     return self.__pip
+
+
+  def get_suit(self):
+    """
+    Getter.
+
+    Out:
+    (str): A card's suit.
+    """
+
+    return self.__suit
+
+
+  def get_hidden(self):
+    """
+    Getter.
+
+    Out:
+    (bool): A card's hidden state.
+    """
+
+    return self.__hidden
+
+
+  def set_hidden(self, value):
+    """
+    Setter.
+
+    In:
+    value (bool): A card's new hidden state.
+    """
+
+    self.__hidden = value
