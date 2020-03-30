@@ -145,6 +145,39 @@ class Game:
       hand.set_cards(hand.get_cards() + [card])
 
 
+  def natural(self):
+    """
+    Cards dealt may be a natural.
+
+    Out:
+    (bool): A player or a dealer has a natural.
+    """
+
+    return self.get_dealer().get_hand().natural() or self.get_player().get_hand().natural()
+
+
+  def settle(self):
+    """
+    Round of Blackjack ends.
+    """
+
+    # A dealer and a player have natural
+    if self.get_dealer().get_hand().natural() and self.get_player().get_hand().natural():
+      self.get_player().tie()
+    
+    # A dealer has natural
+    elif self.get_dealer().get_hand().natural():
+      self.get_player().loss()
+
+    # A player has natural
+    elif self.get_player().get_hand().natural():
+      self.get_player().win()
+
+    # Empty a player's and a dealer's hands
+    self.get_player().get_hand().set_cards([])
+    self.get_dealer().get_hand().set_cards([])
+
+
   def exit(self):
     """
     Exit Blackjack.
@@ -161,8 +194,21 @@ if __name__ == "__main__":
     if status == 1:
       return
 
-    status = game.bet()
-    if status == 1:
-      return
+    # Game loop
+    while True:
+      if 1000 <= game.get_player().get_purse().get_size() <= 0:
+        game.exit()
+        break
+
+      status = game.bet()
+      if status == 1:
+        return
+
+      game.deal()
+
+      if game.natural():
+        game.settle()
+        continue
+
 
   main()

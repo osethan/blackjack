@@ -181,3 +181,48 @@ def test_game_deal():
     assert actual_player_cards[i].get_suit() == expected_player_cards[i].get_suit()
     assert actual_player_cards[i].get_pip() == expected_player_cards[i].get_pip()
     assert actual_player_cards[i].get_hidden() == expected_player_cards[i].get_hidden()
+
+
+@pytest.mark.parametrize('player_cards, dealer_cards, player_bet, expected_player_purse', [
+  # Expected successes
+  # A player and a dealer have natural
+  ([Card('Clubs', 'Ace'), Card('Hearts', '10')],
+  [Card('Diamonds', 'Jack'), Card('Spades', 'Ace')],
+  100,
+  200),
+  # A player has natural
+  ([Card('Clubs', 'Ace'), Card('Hearts', '10')],
+  [Card('Diamonds', 'Jack'), Card('Spades', '9')],
+  100,
+  350),
+  # A dealer has natural
+  ([Card('Clubs', 'Ace'), Card('Hearts', '9')],
+  [Card('Diamonds', 'Jack'), Card('Spades', 'Ace')],
+  100,
+  100)
+])
+def test_game_settle(player_cards, dealer_cards, player_bet, expected_player_purse):
+  """
+  Round of Blackjack settled.
+  """
+
+  game = Game()
+  game.get_player().get_hand().set_cards(player_cards)
+  game.get_dealer().get_hand().set_cards(dealer_cards)
+  game.get_player().make_bet(player_bet)
+  game.settle()
+
+  expected_player_cards = []
+  expected_player_bet = 0
+  expected_player_purse = expected_player_purse
+  expected_dealer_cards = []
+
+  actual_player_cards = game.get_player().get_hand().get_cards()
+  actual_player_bet = game.get_player().get_bet().get_size()
+  actual_player_purse = game.get_player().get_purse().get_size()
+  actual_dealer_cards = game.get_dealer().get_hand().get_cards()
+
+  assert actual_player_cards == expected_player_cards
+  assert actual_player_bet == expected_player_bet
+  assert actual_player_purse == expected_player_purse
+  assert actual_dealer_cards == expected_dealer_cards
