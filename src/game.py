@@ -156,6 +156,16 @@ class Game:
     return self.get_dealer().get_hand().natural() or self.get_player().get_hand().natural()
 
 
+  def hit(self):
+    """
+    A seat hits a pack for more cards, stays or busts.
+    """
+
+    # A player hits, stays or busts
+    while True:
+      self.print(f'Your score is {self.get_player().get_hand().score()}. Do you want to hit?')
+
+
   def settle(self):
     """
     Round of Blackjack ends.
@@ -209,6 +219,8 @@ if __name__ == "__main__":
       if game.natural():
         game.settle()
         continue
+
+      game.hit()
 
 
   main()
