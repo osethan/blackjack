@@ -26,7 +26,6 @@ class Hand:
     return self.__cards
 
 
-  # TODO: Write set_cards for natural testing
   def set_cards(self, cards):
     """
     Setter.
