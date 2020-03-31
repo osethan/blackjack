@@ -23,4 +23,5 @@
 
 ## Result
 
-13:30 hours | Blackjack playable without insurance, double down, or split pair
+13:30 hours\
+Blackjack playable without insurance, double down, or split pair
