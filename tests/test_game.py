@@ -226,3 +226,66 @@ def test_game_settle(player_cards, dealer_cards, player_bet, expected_player_pur
   assert actual_player_bet == expected_player_bet
   assert actual_player_purse == expected_player_purse
   assert actual_dealer_cards == expected_dealer_cards
+
+
+@pytest.mark.parametrize('prints, prompts, inputs, cards, new_card, expected', [
+  # Expected successes
+  # A player stays
+  ([
+    'Your score is 20. Do you want to hit? (y/n)'
+  ], [], [
+    'n'
+  ],
+  [Card('Diamonds', '9'), Card('Diamonds', 'Ace')],
+  None,
+  0),
+  # A player hits once, then stays
+  ([
+    'Your score is 5. Do you want to hit? (y/n)',
+    'Your score is 10. Do you want to hit? (y/n)'
+  ], [], [
+    'y',
+    'n'
+  ],
+  [Card('Clubs', '2'), Card('Clubs', '3')],
+  Card('Hearts', '5'),
+  0),
+  # A player hits once, and busts
+  ([
+    'Your score is 20. Do you want to hit? (y/n)',
+    'Player bust'
+  ], [], [
+    'y'
+  ],
+  [Card('Diamonds', '10'), Card('Diamonds', 'Queen')],
+  Card('Clubs', '2'),
+  2),
+  # A player quits
+  ([
+    'Your score is 20. Do you want to hit? (y/n)'
+  ], [], [
+    'q'
+  ],
+  [Card('Diamonds', '10'), Card('Diamonds', 'Queen')],
+  None,
+  1),
+])
+def test_game_hit(prints, prompts, inputs, cards, new_card, expected):
+  """
+  A player and a dealer can hit, stay or bust.
+  """
+
+  def test_print(message):
+    _print = prints.pop(0)
+    assert message == _print
+
+  def test_prompt(message = ''):
+    if len(prompts) > 0:
+      _prompt = prompts.pop(0)
+      assert message == _prompt
+    return inputs.pop(0)
+
+  game = Game(_print = test_print, _input = test_prompt)
+  game.get_player().get_hand().set_cards(cards)
+  actual = game.hit(new_card)
+  assert actual == expected

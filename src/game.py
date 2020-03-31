@@ -156,14 +156,42 @@ class Game:
     return self.get_dealer().get_hand().natural() or self.get_player().get_hand().natural()
 
 
-  def hit(self):
+  def hit(self, card = None):
     """
     A seat hits a pack for more cards, stays or busts.
+
+    Status codes:
+    0) Ok
+    1) Exit
+    2) Player Bust
+
+    In:
+    card (Card): A card to hit from a pack.
+
+    Out:
+    (int): Status code.
     """
 
     # A player hits, stays or busts
     while True:
-      self.print(f'Your score is {self.get_player().get_hand().score()}. Do you want to hit?')
+      score = self.get_player().get_hand().score()
+      
+      if score > 21:
+        self.print('Player bust')
+        return 2
+
+      self.print(f'Your score is {self.get_player().get_hand().score()}. Do you want to hit? (y/n)')
+      res = self.input()
+
+      if res == 'q':
+        return 1
+      elif res == 'y':
+        new_card = self.get_pack().hit(card)
+        hand = self.get_player().get_hand()
+        hand.set_cards(hand.get_cards() + [new_card])
+        continue
+      elif res == 'n':
+        return 0
 
 
   def settle(self):
@@ -220,7 +248,9 @@ if __name__ == "__main__":
         game.settle()
         continue
 
-      game.hit()
+      status = game.hit()
+      if status == 1:
+        return
 
 
   main()
