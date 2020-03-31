@@ -358,3 +358,27 @@ def test_game_hit_dealer(prints, prompts, inputs, cards, new_card, expected):
   game.get_dealer().get_hand().set_cards(cards)
   actual = game.hit_dealer(new_card)
   assert actual == expected
+
+
+@pytest.mark.parametrize('size, expected', [
+  # Expected successes
+  # 0 chips
+  (0, False),
+  # 1 chip
+  (1, False),
+  # 1000 chips
+  (1000, False),
+  # Over 1000 chips
+  (1001, False),
+  # Playable number of chips
+  (500, True)
+])
+def test_game_play(size, expected):
+  """
+  Game ends when player has 0, 1, or 1000 or over chips.
+  """
+
+  game = Game()
+  game.get_player().get_purse().set_size(size)
+  actual = game.play()
+  assert actual == expected

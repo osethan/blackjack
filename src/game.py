@@ -316,6 +316,18 @@ class Game:
     self.print('Come again soon')
 
 
+  def play(self):
+    """
+    Continue game loop.
+
+    Out:
+    (bool): Continue game loop.
+    """
+
+    size = self.get_player().get_purse().get_size()
+    return size > 1 and size < 1000
+
+
   def main(self):
     """
     Play Blackjack.
@@ -327,7 +339,7 @@ class Game:
 
     # Game loop
     while True:
-      if 1000 <= self.get_player().get_purse().get_size() <= 0:
+      if not game.play():
         self.exit()
         break
 
