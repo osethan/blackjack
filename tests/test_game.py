@@ -86,7 +86,7 @@ def test_game_welcome(prints, prompts, inputs):
   ([
     '\nYour purse has 200 chips. What is your bet?',
     'Can only bet integer chips',
-    'Your purse has 200 chips. What is your bet?'
+    '\nYour purse has 200 chips. What is your bet?'
   ], [], [
     'Blackjack',
     '100'
@@ -95,7 +95,7 @@ def test_game_welcome(prints, prompts, inputs):
   ([
     '\nYour purse has 200 chips. What is your bet?',
     'Can only bet integer chips',
-    'Your purse has 200 chips. What is your bet?'
+    '\nYour purse has 200 chips. What is your bet?'
   ], [], [
     '50.5',
     '100'
@@ -104,7 +104,7 @@ def test_game_welcome(prints, prompts, inputs):
   ([
     '\nYour purse has 200 chips. What is your bet?',
     'Can only bet between 2 - 500 chips and no more than purse',
-    'Your purse has 200 chips. What is your bet?'
+    '\nYour purse has 200 chips. What is your bet?'
   ], [], [
     '1',
     '100'
@@ -113,7 +113,7 @@ def test_game_welcome(prints, prompts, inputs):
   ([
     '\nYour purse has 200 chips. What is your bet?',
     'Can only bet between 2 - 500 chips and no more than purse',
-    'Your purse has 200 chips. What is your bet?'
+    '\nYour purse has 200 chips. What is your bet?'
   ], [], [
     '250',
     '100'
@@ -122,7 +122,7 @@ def test_game_welcome(prints, prompts, inputs):
   ([
     '\nYour purse has 600 chips. What is your bet?',
     'Can only bet between 2 - 500 chips and no more than purse',
-    'Your purse has 600 chips. What is your bet?'
+    '\nYour purse has 600 chips. What is your bet?'
   ], [], [
     '550',
     '100'
@@ -330,17 +330,17 @@ def test_game_hit_player(prints, prompts, inputs, cards, new_card, expected):
 @pytest.mark.parametrize('prints, prompts, inputs, cards, new_card, expected', [
   # Expected successes
   # A dealer stays
-  ([], [], [],
+  (['Dealer score is 20'], [], [],
   [Card('Diamonds', '9'), Card('Diamonds', 'Ace')],
   None,
   0),
   # A dealer hits, then stays
-  ([], [], [],
+  (['Dealer score is 18'], [], [],
   [Card('Diamonds', '9'), Card('Diamonds', '7')],
   Card('Clubs', '2'),
   0),
   # A dealer hits, then busts
-  ([], [], [],
+  (['Dealer score is 26'], [], [],
   [Card('Diamonds', '9'), Card('Diamonds', '7')],
   Card('Clubs', '10'),
   3)
@@ -354,13 +354,7 @@ def test_game_hit_dealer(prints, prompts, inputs, cards, new_card, expected):
     _print = prints.pop(0)
     assert message == _print
 
-  def test_prompt(message = ''):
-    if len(prompts) > 0:
-      _prompt = prompts.pop(0)
-      assert message == _prompt
-    return inputs.pop(0)
-
-  game = Game(_print = test_print, _input = test_prompt)
+  game = Game(_print = test_print)
   game.get_dealer().get_hand().set_cards(cards)
   actual = game.hit_dealer(new_card)
   assert actual == expected

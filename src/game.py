@@ -237,11 +237,12 @@ class Game:
     while True:
       score = self.get_dealer().get_hand().score()
       
-      if 16 < score <= 21:
-        return 0
-
-      if score > 21:
-        return 3
+      if 16 < score:
+        self.print(f'Dealer score is {self.get_dealer().get_hand().score()}')
+        if score <= 21:
+          return 0
+        else:
+          return 3
 
       new_card = self.get_pack().hit(card)
       hand = self.get_dealer().get_hand()
