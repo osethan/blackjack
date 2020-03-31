@@ -339,7 +339,7 @@ class Game:
 
     # Game loop
     while True:
-      if not game.play():
+      if not self.play():
         self.exit()
         break
 
