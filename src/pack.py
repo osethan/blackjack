@@ -70,12 +70,21 @@ class Pack:
     self.set_cards(cards)
 
 
-  def hit(self):
+  def hit(self, card = None):
     """
     Take front card from pack.
+
+    In:
+    card (Card): A card to remove from a pack.
 
     Out:
     (Card): Card removed from pack.
     """
+
+    if card:
+      for i, c in enumerate(self.get_cards()):
+        if c.get_suit() == card.get_suit() and c.get_pip() == card.get_pip():
+          return self.get_cards().pop(i)
+      return None
 
     return self.get_cards().pop(0)

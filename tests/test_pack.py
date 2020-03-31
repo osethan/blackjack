@@ -1,5 +1,6 @@
 import pytest
 
+from src.card import Card
 from src.pack import Pack
 
 
@@ -43,13 +44,20 @@ def test_pack_shuffle_size(cards):
   assert len(pack.get_cards()) == 6 * 52
 
 
-def test_pack_hit():
+@pytest.mark.parametrize('card, expected', [
+  # Expected successes
+  # No card
+  (None, Card('Clubs', '2')),
+  # Selected card
+  (Card('Spades', 'Ace'), Card('Spades', 'Ace'))
+])
+def test_pack_hit(card, expected):
   """
   Remove front card from pack.
   """
 
   pack = Pack()
-
-  expected = pack.get_cards()[0].get_pip()
-  actual = pack.hit().get_pip()
-  assert actual == expected
+  actual = pack.hit(card)
+  assert actual.get_suit() == expected.get_suit()
+  assert actual.get_pip() == expected.get_pip()
+  assert actual.get_hidden() == expected.get_hidden()
