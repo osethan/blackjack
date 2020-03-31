@@ -209,7 +209,22 @@ def test_game_deal():
   ([Card('Clubs', '9'), Card('Clubs', '10')],
   [Card('Spades', '9'), Card('Spades', '10'), Card('Hearts', 'Queen')],
   100,
-  300)
+  300),
+  # A player wins over a dealer
+  ([Card('Hearts', '9'), Card('Hearts', '10')],
+  [Card('Diamonds', '8'), Card('Diamonds', '10')],
+  100,
+  300),
+  # A player and a dealer tie
+  ([Card('Hearts', '9'), Card('Hearts', '10')],
+  [Card('Diamonds', '9'), Card('Diamonds', '10')],
+  100,
+  200),
+  # A player loses to a dealer
+  ([Card('Diamonds', '8'), Card('Diamonds', '10')],
+  [Card('Hearts', '9'), Card('Hearts', '10')],
+  100,
+  100)
 ])
 def test_game_settle(player_cards, dealer_cards, player_bet, expected_player_purse):
   """

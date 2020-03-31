@@ -275,6 +275,18 @@ class Game:
     elif self.get_dealer().get_hand().score() > 21:
       self.get_player().win()
 
+    # A player wins over a dealer
+    elif self.get_player().get_hand().score() > self.get_dealer().get_hand().score():
+      self.get_player().win()
+    
+    # A player ties a dealer
+    elif self.get_player().get_hand().score() == self.get_dealer().get_hand().score():
+      self.get_player().tie()
+
+    # A player loses to a dealer
+    elif self.get_player().get_hand().score() < self.get_dealer().get_hand().score():
+      self.get_player().loss()
+
     # Empty a player's and a dealer's hands
     self.get_player().get_hand().set_cards([])
     self.get_dealer().get_hand().set_cards([])
