@@ -199,7 +199,17 @@ def test_game_deal():
   ([Card('Clubs', 'Ace'), Card('Hearts', '9')],
   [Card('Diamonds', 'Jack'), Card('Spades', 'Ace')],
   100,
-  100)
+  100),
+  # A player busts
+  ([Card('Spades', '9'), Card('Spades', '10'), Card('Hearts', 'Queen')],
+  [Card('Clubs', '2'), Card('Clubs', '3')],
+  100,
+  100),
+  # A dealer busts
+  ([Card('Clubs', '9'), Card('Clubs', '10')],
+  [Card('Spades', '9'), Card('Spades', '10'), Card('Hearts', 'Queen')],
+  100,
+  300)
 ])
 def test_game_settle(player_cards, dealer_cards, player_bet, expected_player_purse):
   """
@@ -239,7 +249,7 @@ def test_game_settle(player_cards, dealer_cards, player_bet, expected_player_pur
   [Card('Diamonds', '9'), Card('Diamonds', 'Ace')],
   None,
   0),
-  # A player hits once, then stays
+  # A player hits, then stays
   ([
     'Your score is 5. Do you want to hit? (y/n)',
     'Your score is 10. Do you want to hit? (y/n)'
@@ -250,7 +260,7 @@ def test_game_settle(player_cards, dealer_cards, player_bet, expected_player_pur
   [Card('Clubs', '2'), Card('Clubs', '3')],
   Card('Hearts', '5'),
   0),
-  # A player hits once, and busts
+  # A player hits, and busts
   ([
     'Your score is 20. Do you want to hit? (y/n)',
     'Player bust'
@@ -270,9 +280,9 @@ def test_game_settle(player_cards, dealer_cards, player_bet, expected_player_pur
   None,
   1),
 ])
-def test_game_hit(prints, prompts, inputs, cards, new_card, expected):
+def test_game_hit_player(prints, prompts, inputs, cards, new_card, expected):
   """
-  A player and a dealer can hit, stay or bust.
+  A player can hit, stay or bust.
   """
 
   def test_print(message):
@@ -287,5 +297,46 @@ def test_game_hit(prints, prompts, inputs, cards, new_card, expected):
 
   game = Game(_print = test_print, _input = test_prompt)
   game.get_player().get_hand().set_cards(cards)
-  actual = game.hit(new_card)
+  actual = game.hit_player(new_card)
+  assert actual == expected
+
+
+@pytest.mark.parametrize('prints, prompts, inputs, cards, new_card, expected', [
+  # Expected successes
+  # A dealer stays
+  ([], [], [],
+  [Card('Diamonds', '9'), Card('Diamonds', 'Ace')],
+  None,
+  0),
+  # A dealer hits, then stays
+  ([], [], [],
+  [Card('Diamonds', '9'), Card('Diamonds', '7')],
+  Card('Clubs', '2'),
+  0),
+  # A dealer hits, then busts
+  ([
+    'Dealer bust'
+  ], [], [],
+  [Card('Diamonds', '9'), Card('Diamonds', '7')],
+  Card('Clubs', '10'),
+  3)
+])
+def test_game_hit_dealer(prints, prompts, inputs, cards, new_card, expected):
+  """
+  A dealer can hit, stay, or bust.
+  """
+
+  def test_print(message):
+    _print = prints.pop(0)
+    assert message == _print
+
+  def test_prompt(message = ''):
+    if len(prompts) > 0:
+      _prompt = prompts.pop(0)
+      assert message == _prompt
+    return inputs.pop(0)
+
+  game = Game(_print = test_print, _input = test_prompt)
+  game.get_dealer().get_hand().set_cards(cards)
+  actual = game.hit_dealer(new_card)
   assert actual == expected

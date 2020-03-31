@@ -172,7 +172,33 @@ class Game:
     (int): Status code.
     """
 
-    # A player hits, stays or busts
+    # A player hits, stays, or busts
+    res = self.hit_player(card)
+    if res:
+      return res
+
+    # A dealer hits, stays, or busts
+    res = self.hit_dealer(card)
+    if res:
+      return res
+    
+
+  def hit_player(self, card = None):
+    """
+    A player hits a pack for more cards, stays or busts.
+
+    Status codes:
+    0) Ok
+    1) Exit
+    2) Player Bust
+
+    In:
+    card (Card): A card to hit from a pack.
+
+    Out:
+    (int): Status code.
+    """
+
     while True:
       score = self.get_player().get_hand().score()
       
@@ -194,6 +220,36 @@ class Game:
         return 0
 
 
+  def hit_dealer(self, card = None):
+    """
+    A player hits a pack for more cards, stays or busts.
+
+    Status codes:
+    0) Ok
+    3) Dealer Bust
+
+    In:
+    card (Card): A card to hit from a pack.
+
+    Out:
+    (int): Status code.
+    """
+
+    while True:
+      score = self.get_dealer().get_hand().score()
+      
+      if 16 < score <= 21:
+        return 0
+
+      if score > 21:
+        self.print('Dealer bust')
+        return 3
+
+      new_card = self.get_pack().hit(card)
+      hand = self.get_dealer().get_hand()
+      hand.set_cards(hand.get_cards() + [new_card])
+
+
   def settle(self):
     """
     Round of Blackjack ends.
@@ -209,6 +265,14 @@ class Game:
 
     # A player has natural
     elif self.get_player().get_hand().natural():
+      self.get_player().win()
+
+    # A player busts
+    elif self.get_player().get_hand().score() > 21:
+      self.get_player().loss()
+
+    # A dealer busts
+    elif self.get_dealer().get_hand().score() > 21:
       self.get_player().win()
 
     # Empty a player's and a dealer's hands
@@ -251,6 +315,9 @@ if __name__ == "__main__":
       status = game.hit()
       if status == 1:
         return
+      if status == 2 or status == 3:
+        game.settle()
+        continue
 
 
   main()
