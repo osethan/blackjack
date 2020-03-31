@@ -65,6 +65,8 @@ def test_hand_set_scores(cards, expected):
   ([Card('Clubs', '2'), Card('Diamonds', '3'), Card('Hearts', 'Ace'), Card('Spades', 'Ace')], 17),
   # Four scores
   ([Card('Clubs', '2'), Card('Diamonds', 'Ace'), Card('Hearts', 'Ace'), Card('Spades', 'Ace')], 15),
+  # One score, bust
+  ([Card('Diamonds', '10'), Card('Diamonds', 'Queen'), Card('Diamonds', '2')], 22)
 ])
 def test_hand_get_score(cards, expected):
   """

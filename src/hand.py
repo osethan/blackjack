@@ -96,6 +96,8 @@ class Hand:
     for score in self.get_scores()[-1::-1]:
       if score <= 21:
         return score
+    
+    return self.get_scores()[0]
 
   
   def natural(self):
