@@ -102,7 +102,7 @@ class Game:
     """
 
     while True:
-      self.print(f'Your purse has {self.get_player().get_purse().get_size()} chips. What is your bet?')
+      self.print(f'\nYour purse has {self.get_player().get_purse().get_size()} chips. What is your bet?')
       res = self.input()
 
       if res == 'q':
@@ -203,10 +203,9 @@ class Game:
       score = self.get_player().get_hand().score()
       
       if score > 21:
-        self.print('Player bust')
         return 2
 
-      self.print(f'Your score is {self.get_player().get_hand().score()}. Do you want to hit? (y/n)')
+      self.print(f'\nYour score is {self.get_player().get_hand().score()}. Do you want to hit? (y/n)')
       res = self.input()
 
       if res == 'q':
@@ -242,7 +241,6 @@ class Game:
         return 0
 
       if score > 21:
-        self.print('Dealer bust')
         return 3
 
       new_card = self.get_pack().hit(card)
@@ -257,39 +255,56 @@ class Game:
 
     # A dealer and a player have natural
     if self.get_dealer().get_hand().natural() and self.get_player().get_hand().natural():
+      self.print('Dealer and Player natural')
       self.get_player().tie()
     
     # A dealer has natural
     elif self.get_dealer().get_hand().natural():
+      self.print('Dealer natural')
       self.get_player().loss()
 
     # A player has natural
     elif self.get_player().get_hand().natural():
+      self.print('Player natural')
       self.get_player().win()
 
     # A player busts
     elif self.get_player().get_hand().score() > 21:
+      self.print('Player bust')
       self.get_player().loss()
 
     # A dealer busts
     elif self.get_dealer().get_hand().score() > 21:
+      self.print('Dealer bust')
       self.get_player().win()
 
     # A player wins over a dealer
     elif self.get_player().get_hand().score() > self.get_dealer().get_hand().score():
+      self.print('Player win')
       self.get_player().win()
     
     # A player ties a dealer
     elif self.get_player().get_hand().score() == self.get_dealer().get_hand().score():
+      self.print('Dealer and Player tie')
       self.get_player().tie()
 
     # A player loses to a dealer
     elif self.get_player().get_hand().score() < self.get_dealer().get_hand().score():
+      self.print('Player loss')
       self.get_player().loss()
 
     # Empty a player's and a dealer's hands
     self.get_player().get_hand().set_cards([])
     self.get_dealer().get_hand().set_cards([])
+
+
+  def reshuffle(self):
+    """
+    A pack with under 75 cards is reshuffled.
+    """
+
+    if len(self.get_pack().get_cards()) < 75:
+      self.get_pack().shuffle()
 
 
   def exit(self):
@@ -300,36 +315,34 @@ class Game:
     self.print('Come again soon')
 
 
-if __name__ == "__main__":
-  def main():
-    game = Game()
+  def main(self):
+    """
+    Play Blackjack.
+    """
 
-    status = game.welcome()
+    status = self.welcome()
     if status == 1:
       return
 
     # Game loop
     while True:
-      if 1000 <= game.get_player().get_purse().get_size() <= 0:
-        game.exit()
+      if 1000 <= self.get_player().get_purse().get_size() <= 0:
+        self.exit()
         break
 
-      status = game.bet()
+      status = self.bet()
       if status == 1:
         return
 
-      game.deal()
+      self.deal()
 
-      if game.natural():
-        game.settle()
-        continue
+      if self.natural():
+        self.settle()
+      else:
+        status = self.hit()
+        if status == 1:
+          return
+        else:
+          self.settle()
 
-      status = game.hit()
-      if status == 1:
-        return
-      if status == 2 or status == 3:
-        game.settle()
-        continue
-
-
-  main()
+      self.reshuffle()

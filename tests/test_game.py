@@ -77,14 +77,14 @@ def test_game_welcome(prints, prompts, inputs):
   # Expected successes
   # A player makes a bet
   ([
-    'Your purse has 200 chips. What is your bet?'
+    '\nYour purse has 200 chips. What is your bet?'
   ], [], [
     '100'
   ], None),
   # Expected failures
   # A player doesn't bet a number
   ([
-    'Your purse has 200 chips. What is your bet?',
+    '\nYour purse has 200 chips. What is your bet?',
     'Can only bet integer chips',
     'Your purse has 200 chips. What is your bet?'
   ], [], [
@@ -93,7 +93,7 @@ def test_game_welcome(prints, prompts, inputs):
   ], None),
   # A player doesn't make an integer bet
   ([
-    'Your purse has 200 chips. What is your bet?',
+    '\nYour purse has 200 chips. What is your bet?',
     'Can only bet integer chips',
     'Your purse has 200 chips. What is your bet?'
   ], [], [
@@ -102,7 +102,7 @@ def test_game_welcome(prints, prompts, inputs):
   ], None),
   # A player bet under 2 chips
   ([
-    'Your purse has 200 chips. What is your bet?',
+    '\nYour purse has 200 chips. What is your bet?',
     'Can only bet between 2 - 500 chips and no more than purse',
     'Your purse has 200 chips. What is your bet?'
   ], [], [
@@ -111,7 +111,7 @@ def test_game_welcome(prints, prompts, inputs):
   ], None),
   # A player bets over purse
   ([
-    'Your purse has 200 chips. What is your bet?',
+    '\nYour purse has 200 chips. What is your bet?',
     'Can only bet between 2 - 500 chips and no more than purse',
     'Your purse has 200 chips. What is your bet?'
   ], [], [
@@ -120,7 +120,7 @@ def test_game_welcome(prints, prompts, inputs):
   ], None),
   # A player bets over 500 chips
   ([
-    'Your purse has 600 chips. What is your bet?',
+    '\nYour purse has 600 chips. What is your bet?',
     'Can only bet between 2 - 500 chips and no more than purse',
     'Your purse has 600 chips. What is your bet?'
   ], [], [
@@ -183,55 +183,67 @@ def test_game_deal():
     assert actual_player_cards[i].get_hidden() == expected_player_cards[i].get_hidden()
 
 
-@pytest.mark.parametrize('player_cards, dealer_cards, player_bet, expected_player_purse', [
+@pytest.mark.parametrize('prints, player_cards, dealer_cards, player_bet, expected_player_purse', [
   # Expected successes
   # A player and a dealer have natural
-  ([Card('Clubs', 'Ace'), Card('Hearts', '10')],
+  (['Dealer and Player natural'],
+  [Card('Clubs', 'Ace'), Card('Hearts', '10')],
   [Card('Diamonds', 'Jack'), Card('Spades', 'Ace')],
   100,
   200),
   # A player has natural
-  ([Card('Clubs', 'Ace'), Card('Hearts', '10')],
+  (['Player natural'],
+  [Card('Clubs', 'Ace'), Card('Hearts', '10')],
   [Card('Diamonds', 'Jack'), Card('Spades', '9')],
   100,
   350),
   # A dealer has natural
-  ([Card('Clubs', 'Ace'), Card('Hearts', '9')],
+  (['Dealer natural'],
+  [Card('Clubs', 'Ace'), Card('Hearts', '9')],
   [Card('Diamonds', 'Jack'), Card('Spades', 'Ace')],
   100,
   100),
   # A player busts
-  ([Card('Spades', '9'), Card('Spades', '10'), Card('Hearts', 'Queen')],
+  (['Player bust'],
+  [Card('Spades', '9'), Card('Spades', '10'), Card('Hearts', 'Queen')],
   [Card('Clubs', '2'), Card('Clubs', '3')],
   100,
   100),
   # A dealer busts
-  ([Card('Clubs', '9'), Card('Clubs', '10')],
+  (['Dealer bust'],
+  [Card('Clubs', '9'), Card('Clubs', '10')],
   [Card('Spades', '9'), Card('Spades', '10'), Card('Hearts', 'Queen')],
   100,
   300),
   # A player wins over a dealer
-  ([Card('Hearts', '9'), Card('Hearts', '10')],
+  (['Player win'],
+  [Card('Hearts', '9'), Card('Hearts', '10')],
   [Card('Diamonds', '8'), Card('Diamonds', '10')],
   100,
   300),
   # A player and a dealer tie
-  ([Card('Hearts', '9'), Card('Hearts', '10')],
+  (['Dealer and Player tie'],
+  [Card('Hearts', '9'), Card('Hearts', '10')],
   [Card('Diamonds', '9'), Card('Diamonds', '10')],
   100,
   200),
   # A player loses to a dealer
-  ([Card('Diamonds', '8'), Card('Diamonds', '10')],
+  (['Player loss'],
+  [Card('Diamonds', '8'), Card('Diamonds', '10')],
   [Card('Hearts', '9'), Card('Hearts', '10')],
   100,
   100)
 ])
-def test_game_settle(player_cards, dealer_cards, player_bet, expected_player_purse):
+def test_game_settle(prints, player_cards, dealer_cards, player_bet, expected_player_purse):
   """
   Round of Blackjack settled.
   """
 
-  game = Game()
+  def test_print(message):
+    _print = prints.pop(0)
+    assert message == _print
+
+  game = Game(_print = test_print)
   game.get_player().get_hand().set_cards(player_cards)
   game.get_dealer().get_hand().set_cards(dealer_cards)
   game.get_player().make_bet(player_bet)
@@ -257,7 +269,7 @@ def test_game_settle(player_cards, dealer_cards, player_bet, expected_player_pur
   # Expected successes
   # A player stays
   ([
-    'Your score is 20. Do you want to hit? (y/n)'
+    '\nYour score is 20. Do you want to hit? (y/n)'
   ], [], [
     'n'
   ],
@@ -266,8 +278,8 @@ def test_game_settle(player_cards, dealer_cards, player_bet, expected_player_pur
   0),
   # A player hits, then stays
   ([
-    'Your score is 5. Do you want to hit? (y/n)',
-    'Your score is 10. Do you want to hit? (y/n)'
+    '\nYour score is 5. Do you want to hit? (y/n)',
+    '\nYour score is 10. Do you want to hit? (y/n)'
   ], [], [
     'y',
     'n'
@@ -277,8 +289,7 @@ def test_game_settle(player_cards, dealer_cards, player_bet, expected_player_pur
   0),
   # A player hits, and busts
   ([
-    'Your score is 20. Do you want to hit? (y/n)',
-    'Player bust'
+    '\nYour score is 20. Do you want to hit? (y/n)'
   ], [], [
     'y'
   ],
@@ -287,7 +298,7 @@ def test_game_settle(player_cards, dealer_cards, player_bet, expected_player_pur
   2),
   # A player quits
   ([
-    'Your score is 20. Do you want to hit? (y/n)'
+    '\nYour score is 20. Do you want to hit? (y/n)'
   ], [], [
     'q'
   ],
@@ -329,9 +340,7 @@ def test_game_hit_player(prints, prompts, inputs, cards, new_card, expected):
   Card('Clubs', '2'),
   0),
   # A dealer hits, then busts
-  ([
-    'Dealer bust'
-  ], [], [],
+  ([], [], [],
   [Card('Diamonds', '9'), Card('Diamonds', '7')],
   Card('Clubs', '10'),
   3)
